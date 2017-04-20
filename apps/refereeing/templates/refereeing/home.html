@@ -25,6 +25,5 @@
             <a class="btn btn-default {{ 3|disabled_round }}" href="{% url 'refereeing:rob3' %}">Epreuve 3 {{ 3|round_status }}</a>
         </div>
     </div>
+    <div class="row footer text-muted small">Version {{ version }}</div>
 {% endblock %}
-
-{% block logo %}<div class="logo"></div>{% endblock %}

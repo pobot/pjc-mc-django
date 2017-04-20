@@ -15,6 +15,7 @@ from django.views.generic.base import TemplateView, ContextMixin
 
 import match.models
 from teams.models import Team
+from pjc_mc import version
 
 __author__ = 'Eric Pascual'
 
@@ -27,6 +28,7 @@ class AppMixin(ContextMixin):
         context = super().get_context_data(**kwargs)
         context.update({
             'brand': settings.PJC['title_long'],
+            'version': version,
         })
         return context
 
