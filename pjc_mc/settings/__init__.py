@@ -1,3 +1,4 @@
-# -*- coding: utf-8 -*-
-
-__author__ = 'Eric Pascual'
+from .base import *
+from .pjc import *
+from .suit import *
+from .bootstrap3 import *

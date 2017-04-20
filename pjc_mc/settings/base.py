@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'event.config.EventAppConfig',
     'display.config.DisplayAppConfig',
     'refereeing.config.RefereeingAppConfig',
+    'docmaker.config.DocMakerAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -136,5 +137,5 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-SESSION_COOKIE_AGE = 5 * 60
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 60 * 60        # in minutes
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True

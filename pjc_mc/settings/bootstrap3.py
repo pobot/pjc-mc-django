@@ -13,4 +13,6 @@ BOOTSTRAP3 = {
     'jquery_url': _static('js/jquery.min.js'),
     'css_url': _static('css/bootstrap.min.css'),
     'javascript_url': _static('js/bootstrap.min.js'),
+    'horizontal_label_class': 'col-xs-7',
+    'horizontal_field_class': 'col-xs-5',
 }

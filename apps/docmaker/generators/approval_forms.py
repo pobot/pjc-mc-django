@@ -9,21 +9,43 @@ from teams.models import Category
 
 __author__ = 'Eric Pascual'
 
-__all__ = ['ApprovalSheetGenerator']
+__all__ = ['ApprovalFormGenerator']
 
 
-class ApprovalSheetGenerator(TeamReportGenerator):
+class ApprovalFormGenerator(TeamReportGenerator):
     title = "Fiche d'homologation"
-    output_file_name = 'approval_sheets'
-    description = "individual approval sheet"
+    output_file_name = 'approval_forms'
+    description = "individual team approval form"
+
+    items_table_style = default_table_style + [
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+    ]
 
     def body_story(self, team):
-        def table_items():
+        def general_items():
+            yield Paragraph(
+                "L'équipe a désigné un capitaine qui s'est présenté aux organisateurs",
+                style=cell_body
+            )
+            yield Paragraph(
+                "L'équipe a préparé un dossier de recherche sur la thématique de la compétition "
+                "et a remis son poster aux organisateurs",
+                style=cell_body
+            )
+            yield Paragraph(
+                "L'équipe a bien compris qu'elle ne pourra être classée que si elle s'est présentée "
+                "à toutes les épreuves de robotique, à la présentation de son exposé et a remis son poster",
+                style=cell_body
+            )
+
+        def robotics_items():
                 is_mindstorms = team.category == Category.Mindstorms
                 yield "Le robot ne comporte qu'une seule %s programmable" % ("brique" if is_mindstorms else 'carte')
                 if is_mindstorms:
                     yield Paragraph(
-                        "Aucun moyen de solidification du robot <i>(vis, colle, autocollants, adhésif,...)</i> "
+                        "Aucun moyen de solidification <i>(vis, colle, autocollants, adhésif,...)</i> "
                         "n'est utilisé dans la construction du robot",
                         style=cell_body
                     )
@@ -37,22 +59,17 @@ class ApprovalSheetGenerator(TeamReportGenerator):
                     style=cell_body
                 )
                 yield Paragraph(
-                    "L'équipe a préparé un dossier de recherche sur la thématique de la compétition "
-                    "et a remis son poster aux organisateurs",
-                    style=cell_body
-                )
-                yield Paragraph(
                     "L'équipe a bien compris les règles du jeu ainsi que la procédure de départ",
-                    style=cell_body
-                )
-                yield Paragraph(
-                    "L'équipe est informée que 2 équipiers seulement sont autorisés à être autour de la table de jeu "
-                    "pendant les matchs",
                     style=cell_body
                 )
                 yield Paragraph(
                     "L'équipe a bien compris que toute intervention sur le robot pendant le match entraîne "
                     "la disqualification pour l'épreuve",
+                    style=cell_body
+                )
+                yield Paragraph(
+                    "L'équipe est informée que 2 équipiers seulement sont autorisés à être autour de la table de jeu "
+                    "pendant les matchs",
                     style=cell_body
                 )
                 yield Paragraph(
@@ -72,24 +89,19 @@ class ApprovalSheetGenerator(TeamReportGenerator):
                     ('ALIGN', (0, 0), (0, 0), 'RIGHT')
                 ]
             ),
-            tables_spacer,
+            Paragraph("Déroulement de la compétition", style=section_title),
             Table(
-                [(_, '') for _ in table_items()],
+                [(_, '') for _ in general_items()],
                 colWidths=[6 * inch, 0.7 * inch],
-                style=default_table_style + [
-                    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                ]
+                style=self.items_table_style
+            ),
+            Paragraph("Epreuves de robotique", style=section_title),
+            Table(
+                [(_, '') for _ in robotics_items()],
+                colWidths=[6 * inch, 0.7 * inch],
+                style=self.items_table_style
             ),
             tables_spacer,
-            Table(
-                [
-                    ['Signature équipe :', '']
-                ],
-                colWidths=[6.7 / 2 * inch] * 2,
-                style=no_grid_table_style + [
-                    ('ALIGN', (0, 0), (0, 0), 'RIGHT'),
-                ]
-            ),
-
+            Paragraph("Signature équipe :", style=section_title),
         ):
             yield _

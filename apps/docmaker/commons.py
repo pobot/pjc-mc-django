@@ -3,21 +3,81 @@
 import os
 import datetime
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, PageBreak, Image, ListFlowable, Flowable
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, PageBreak, Image
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, landscape, portrait
+from reportlab.lib.pagesizes import A4, portrait
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER
+
+from django.conf import settings
 
 from teams.models import Team
 
 __author__ = 'Eric Pascual'
 
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), '../resources')    # TODO replace by pkg way
+__all__ = [
+    'ReportGenerator', 'TeamReportGenerator',
+    'DefaultPageHeader', 'DefaultTeamHeader',
+    'cell_body', 'cell_header', 'match_title', 'match_comment', 'tables_spacer', 'section_title',
+    'no_grid_table_style', 'default_table_style',
+    'cell_bkgnd_color'
+]
+
+# remember to update this if the resources folder is moved
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), 'resources')
 
 logo_left = Image(os.path.join(ASSETS_DIR, 'logo_left.png'), width=0.84 * inch, height=0.79 * inch)
 logo_right = Image(os.path.join(ASSETS_DIR, 'logo_right.png'), width=0.95 * inch, height=0.79 * inch)
+
+cell_body = ParagraphStyle(
+    'cell_header',
+    fontName='Helvetica',
+    fontSize=12,
+)
+
+cell_header = ParagraphStyle(
+    'cell_header',
+    parent=cell_body,
+    fontName='Helvetica-Bold'
+)
+
+match_title = ParagraphStyle(
+    'match_title',
+    parent=cell_header,
+    alignment=TA_CENTER,
+    spaceAfter=10
+)
+
+match_comment = ParagraphStyle(
+    'match_comment',
+    parent=cell_body,
+    fontName='Helvetica-Oblique',
+    fontSize=10
+)
+
+section_title = ParagraphStyle(
+    'section_title',
+    fontName='Helvetica-Bold',
+    fontSize=12,
+    spaceAfter=10,
+    spaceBefore=10,
+)
+
+tables_spacer = Spacer(0, 0.2 * inch)
+
+no_grid_table_style = [
+    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, -1), 12),
+    ('TOPPADDING', (0, 0), (-1, -1), 0.15 * inch),
+    ('BOTTOMPADDING', (0, 0), (-1, -1), 0.15 * inch),
+]
+
+default_table_style = no_grid_table_style + [
+    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+]
+
+cell_bkgnd_color = colors.Color(0.9, 0.9, 0.9)
 
 
 class PJCDocTemplate(SimpleDocTemplate):
@@ -42,7 +102,9 @@ class PJCDocTemplate(SimpleDocTemplate):
 
 class ReportGenerator(object):
     title = None
+    print_title = True
     output_file_name = None
+    description = None
     page_size = portrait(A4)
 
     def __init__(self, output_dir):
@@ -58,14 +120,15 @@ class ReportGenerator(object):
             title="POBOT Junior Cup " + self.title,
             author="POBOT"
         )
-        doc_story = self.get_story()
-        pdf_doc.build(doc_story)
+        doc_story = self.story()
+        pdf_doc.build(list(doc_story))
+        return pdf_file_path
 
-    def get_story(self):
+    def story(self):
         raise NotImplementedError()
 
 
-class PageHeader(object):
+class DefaultPageHeader(object):
     LOGO_WIDTH = 1.15 * inch
     MARGIN = 0.5 * inch
 
@@ -77,7 +140,7 @@ class PageHeader(object):
         for _ in (
             Table(
                 data=[
-                    [logo_left, 'POBOT Junior Cup 2017', logo_right],       # TODO replace year literal by setting parm
+                    [logo_left, settings.PJC['title_long'], logo_right],
                     ['', self.title, '']
                 ],
                 colWidths=[self.LOGO_WIDTH, self.text_width - 2 * self.LOGO_WIDTH, self.LOGO_WIDTH],
@@ -98,7 +161,7 @@ class PageHeader(object):
             yield _
 
 
-class TeamHeader(object):
+class DefaultTeamHeader(object):
     team_name_style = ParagraphStyle(
         'team_name',
         fontName='Helvetica-Bold',
@@ -111,6 +174,13 @@ class TeamHeader(object):
         'team_school',
         fontName='Helvetica',
         fontSize=14,
+        alignment=TA_CENTER,
+        spaceAfter=0.1 * inch
+    )
+    team_category_style = ParagraphStyle(
+        'team_category',
+        fontName='Helvetica',
+        fontSize=14,
         alignment=TA_CENTER
     )
 
@@ -121,8 +191,11 @@ class TeamHeader(object):
         for _ in (
             Paragraph("%s - %s" % (self._team.num, self._team.name), self.team_name_style),
             Paragraph(
-                "%s - %s" % (self._team.school or '<i>équipe open</i>', self._team.grade.orig),
+                "%s - %s" % (self._team.school or '<i>équipe open</i>', self._team.grade.abbrev),
                 self.team_school_style
+            ),
+            Paragraph(
+                "Catégorie : %s" % self._team.category.name, self.team_category_style
             ),
             Spacer(0, 0.5 * inch)
         ):
@@ -130,14 +203,19 @@ class TeamHeader(object):
 
 
 class TeamReportGenerator(ReportGenerator):
-    def get_story(self):
-        page_header = PageHeader(title=self.title, page_size=self.page_size)
+    team_header_class = DefaultTeamHeader
+
+    def story(self):
+        page_header = DefaultPageHeader(
+            title=self.title if self.print_title else None,
+            page_size=self.page_size
+        )
 
         for team in Team.objects.all():
             for _ in page_header.story():
                 yield _
 
-            team_header = TeamHeader(team)
+            team_header = self.team_header_class(team)
             for _ in team_header.story():
                 yield _
 
