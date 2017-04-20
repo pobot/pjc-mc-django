@@ -1,0 +1,54 @@
+{% extends 'bootstrap3/bootstrap3.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load pjcmc_extras %}
+{% load refereeing_tags %}
+
+{% block bootstrap3_title %}{{ brand }}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}?" />
+    <link href="{% static 'refereeing/css/mobile.css' %}" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block bootstrap3_content %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                {% if user.is_authenticated %}
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-match" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                {% endif %}
+              <a class="navbar-brand" href="{% url 'refereeing:home' %}">{{ brand }}</a>
+            </div>
+
+            {% if user.is_authenticated %}
+                <ul class="dropdown-menu" id="bs-match">
+                    <li {{ 1|round_menu_class }}><a href="{% url 'refereeing:rob1' %}">Epreuve 1</a></li>
+                    <li {{ 2|round_menu_class }}><a href="{% url 'refereeing:rob2' %}">Epreuve 2</a></li>
+                    <li {{ 3|round_menu_class }}><a href="{% url 'refereeing:rob3' %}">Epreuve 3</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'refereeing:logout' %}">Déconnexion</a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% if title %}
+            <h3 class="text-primary">
+                <span>{{ title }}</span>
+            </h3>
+        {% endif %}
+
+        {% block page_content %}{% endblock %}
+        <div class="footer"></div>
+    </div>
+
+    {% block logo %}{% endblock %}
+
+{% endblock %}

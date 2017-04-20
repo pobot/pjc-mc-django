@@ -1,0 +1,23 @@
+{% extends "display/display_base.html" %}
+{% load staticfiles %}
+{% load display_tags %}
+
+{% block display_content %}
+<table class="table table-striped planning translucent">
+    <tbody>
+    {% for item in schedules %}
+        {% with detail=item.detail %}
+            <tr>
+                <th class="team-name">{{ item.team_name|nbsp }}</th>
+                <td class="what_when {{ detail.when|emergency_class }}">{{ detail.what }} à {{ detail.when }}</td>
+                <td class="">{{ detail|verbose_location }}</td>
+            </tr>
+        {% endwith %}
+    {% empty %}
+        <tr>
+            <td colspan="3" class="text-warning">Aucun passage programmé actuellement.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

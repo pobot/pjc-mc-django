@@ -1,0 +1,37 @@
+{% extends "display/display_base.html" %}
+{% load staticfiles %}
+{% load display_tags %}
+
+{% block display_content %}
+<style>
+    th.score {
+        padding-left: 1em !important;
+        padding-right: 1em !important;
+    }
+</style>
+
+<table class="table table-striped table-bordered scores translucent">
+    <thead>
+    <tr>
+        <th class="team-name">&nbsp;</th>
+        {% for n in rng123 %}
+            <th class="score">Epreuve&nbsp;{{ n }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for score in scores_data %}
+        <tr>
+            <th class="team-name">{{ score.team_name|nbsp }}</th>
+            {% for qpoints in score.qpoints %}
+                <td {% if qpoints.1 %}class="text-warning"{% endif %}>{{ qpoints.0}}</td>
+            {% endfor %}
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6" class="text-warning">Aucun score disponible.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

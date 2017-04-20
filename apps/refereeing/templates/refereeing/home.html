@@ -1,0 +1,30 @@
+{% extends 'refereeing/base.html' %}
+{% load bootstrap3 %}
+{% load refereeing_tags %}
+
+{% block bootstrap3_extra_head %}
+    {{  block.super }}
+    <style>
+        body {
+            margin-top: 70px;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+    <div class="container-fluid">
+        {% if user.is_authenticated %}
+            <div class="well well-sm">
+                <span class="lead">Arbitre : {{ user.username }}</span>
+            </div>
+        {% endif %}
+        {% bootstrap_messages %}
+        <div class="btn-group btn-group-vertical btn-block btn-group-lg" role="group">
+            <a class="btn btn-default {{ 1|disabled_round }}" href="{% url 'refereeing:rob1' %}">Epreuve 1 {{ 1|round_status }}</a>
+            <a class="btn btn-default {{ 2|disabled_round }}" href="{% url 'refereeing:rob2' %}">Epreuve 2 {{ 2|round_status }}</a>
+            <a class="btn btn-default {{ 3|disabled_round }}" href="{% url 'refereeing:rob3' %}">Epreuve 3 {{ 3|round_status }}</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block logo %}<div class="logo"></div>{% endblock %}

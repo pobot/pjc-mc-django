@@ -1,0 +1,29 @@
+{% extends 'bootstrap3/bootstrap3.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block bootstrap3_title %}{{ brand }}{% endblock %}
+{% block bootstrap3_extra_head %}
+    <link href="{% static 'refereeing/css/mobile.css' %}" rel="stylesheet" media="screen">
+    <style>
+        body {
+            margin-top: 70px;
+        }
+    </style>
+{% endblock %}
+
+{% block bootstrap3_content %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="{% url 'refereeing:home' %}">{{ brand }}</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block page_content %}{% endblock %}
+    </div>
+
+    <div class="logo"></div>
+{% endblock %}

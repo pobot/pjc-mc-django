@@ -1,0 +1,21 @@
+{% load staticfiles %}
+
+<div class="row message-box">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-{{level}}">
+            <div class="panel-heading">
+                <h1 class="panel-title text-left">POBOT a un message pour vous</h1>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <img src="{% static 'display/img/pobot-logo-small.png'  %}">
+                    </div>
+                    <div class="col-sm-9">
+                        {{ content }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

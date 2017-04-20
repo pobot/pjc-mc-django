@@ -1,0 +1,50 @@
+{% extends 'refereeing/base.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block bootstrap3_extra_script %}
+    {{ block.super }}
+
+    <script src="{% static 'refereeing/js/jquery.bootstrap-touchspin.min.js' %}"></script>
+
+    <script>
+        var $used_time_field = {% if used_time_field %} $("#id_{{ used_time_field }}") {% else %} null {% endif %};
+        var url_rnd_config = '{% url "refereeing:rnd_config" match_num=match_num %}';
+    </script>
+    <script src="{% static 'refereeing/js/pjc_refereeing.js' %}"></script>
+{% endblock %}
+
+{% block page_content %}
+    <form class="form-horizontal" role="form" method="post" id="result_form">
+        {% csrf_token %}
+        {% bootstrap_field form.team layout='horizontal' horizontal_label_class="col-xs-2" horizontal_field_class="col-xs-10" %}
+        {% if random_config %}
+            <div class="well well-sm">
+                <div id="div_btn_config" >
+                    <a id="btn_config" href="#" class="btn btn-primary btn-block">Tirer configuration</a>
+                </div>
+                <div id="div_config" class="text-center hidden h4">
+                    Configuration : <span id="config"></span>
+                </div>
+            </div>
+        {% endif %}
+        {% if not form.errors %}
+        <div id="stopwatch" class="well well-sm">
+            <div class="text-center"><span id="sw_time" class="h1">2:30</span></div>
+            <div class="btn-group btn-group-justified" role="group">
+                <a id="sw_start" href="#" class="btn btn-success">Start</a>
+                <a id="sw_stop" href="#" class="btn btn-danger disabled">Stop</a>
+            </div>
+        </div>
+        {% endif %}
+        {% for field in form %}
+            {% bootstrap_field field exclude='team' layout='horizontal' %}
+        {% endfor %}
+        <div class="well well-sm btn-group btn-group-justified" role="group">
+            {% bootstrap_button "Enregistrer" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
+            {% url 'refereeing:home' as home_url %}
+            {% bootstrap_button "Annuler" href=home_url icon="remove" button_class="btn-default"%}
+        </div>
+    </form>
+
+{% endblock %}
