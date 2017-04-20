@@ -77,7 +77,7 @@ table.planning tbody th {
     vertical-align: middle;
 }
 
-table.planning thead tr th {
+table.planning thead tr td {
     text-align: center;
     vertical-align: top;
 }

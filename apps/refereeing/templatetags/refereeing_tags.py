@@ -11,14 +11,14 @@ register = template.Library()
 
 @register.filter()
 def disabled_round(num):
-    return "" if num != 1 else "disabled"
-    # return "" if Team.objects.filter(**{'robotics%d__isnull' % num: True}).exists() else "disabled"
+    # return "" if num != 1 else "disabled"
+    return "" if Team.objects.filter(**{'robotics%d__isnull' % num: True}).exists() else "disabled"
 
 
 @register.filter()
 def round_status(num):
-    return "" if num != 1 else "(complète)"
-    # return "" if Team.objects.filter(**{'robotics%d__isnull' % num: True}).exists() else "(complète)"
+    # return "" if num != 1 else "(complète)"
+    return "" if Team.objects.filter(**{'robotics%d__isnull' % num: True}).exists() else "(complète)"
 
 
 @register.filter()

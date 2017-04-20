@@ -12,7 +12,7 @@ __author__ = 'Eric Pascual'
 
 register = template.Library()
 
-PLANNING_STATUS_CLASSES = ['glyphicon-ok text-success', 'text-warning', 'text-danger']
+PLANNING_STATUS_CLASSES = ['', 'text-warning', 'text-danger']
 PLANNING_LIMIT_CLASSES = ['', 'text-warning', 'text-danger']
 
 
