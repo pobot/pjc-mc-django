@@ -2,6 +2,6 @@ appdirs==1.4.3
 arrow==0.10.0
 Django==1.10.5
 django-suit==0.2.25
-django-bootstrap3=8.2.2
+django-bootstrap3==8.2.2
 reportlab==3.4.0
 whitenoise==3.3.0
