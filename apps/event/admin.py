@@ -84,7 +84,7 @@ class PlanningControlAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
         abs_sched = datetime.datetime.combine(now.date(), schedule)
         if abs_sched < now:
             return {'class': 'text-error'}
-        if abs_sched - now <= timedelta(minutes=15):
+        if abs_sched - now <= datetime.timedelta(minutes=15):
             return {'class': 'text-warning'}
 
 
@@ -160,7 +160,6 @@ class RankingDisplayAdmin(admin.ModelAdmin):
                     poster=Min('poster'),
                 )
         return qs
-
 
     styles_columns = ('general', 'robotics', 'research', 'poster')
 

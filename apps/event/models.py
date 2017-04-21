@@ -10,11 +10,14 @@ from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 from django.db import models as django_models
 from django.core.exceptions import ValidationError
 
+
 import suit.widgets
 
 from teams.models import *
 from match.models import *
 from research.models import *
+
+DEBUG_COMPUTE_RANKING = False
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS.update({
     django_models.TimeField: {'widget': suit.widgets.SuitTimeWidget},
@@ -32,6 +35,8 @@ time_validators = [
 
 MSG_DELAY_TOO_SHORT = "écart de temps insuffisant"
 MSG_DUPLICATE_TABLE = "tables identiques"
+
+COMPETITION_ITEM_NAMES = [cls.__name__.lower() for cls in (Robotics1, Robotics2, Robotics3, DocumentaryWork, Poster)]
 
 
 def time_dist(t1, t2):
@@ -284,81 +289,85 @@ class Ranking(models.Model):
             format(self=self)
 
     @classmethod
+    def compute_typed_ranking(cls, teams, ranking_type):
+        results = OrderedDict((
+            (t, [points_or_forfait(t, item) for item in COMPETITION_ITEM_NAMES]) for t in teams
+        ))
+        _print_raw_results(results, ranking_type)
+
+        # compute the ranking points as a matrix arranged by topic first
+        rp_raw = [to_rank_points(pts) for pts in transposed(results.values())]
+        _print_raw_rank_points_results(rp_raw, ranking_type)
+
+        # merge robotics ranking points by summing the first 3 rows
+        intermediate_raw_rp = list(transposed(((sum(l[0:3]), l[3], l[4]) for l in transposed(rp_raw))))
+        _print_intermediate_rank_points_results(intermediate_raw_rp, ranking_type)
+
+        # compute the rankings per rows and save it for later
+        ranking_data = {
+            t: [0] + list(r)  # pre-allocate the first slot for the general rank which will be computed later
+            for t, r in zip(results.keys(), transposed(to_ranks(rp) for rp in intermediate_raw_rp))
+        }
+        _print_rankings(ranking_data, ranking_type)
+
+        # normalize to ranking points
+        intermediate_rp = [to_rank_points(rp) for rp in intermediate_raw_rp]
+        # print('intermediate_rp =', intermediate_rp)
+
+        # compute the global ranking
+        global_ranking = to_ranks([sum(l) for l in zip(*intermediate_rp)])
+        # print('global_ranking =', global_ranking)
+
+        # differentiate ex-aequo by using the team age bonus
+        by_rank = {
+            g_r: [t for t, t_r in zip(results.keys(), global_ranking) if t_r == g_r]
+            for g_r in global_ranking
+        }
+        for r, teams in by_rank.items():
+            if len(teams) > 1:
+                teams.sort(key=lambda t: t.grade.bonus, reverse=True)
+            for t in teams:
+                ranking_data[t][0] = r
+
+        ranks = [
+            Ranking(type_code=ranking_type, team=t,
+                    general=r[0], robotics=r[1], research=r[2], poster=r[3]
+                    )
+            for t, r in ranking_data.items()
+        ]
+        # _print_rankings(ranks, ranking_type, final=True)
+
+        # save the result in the db
+        cls.objects.bulk_create(ranks)
+
+    @classmethod
     def compute(cls):
-        def compute_typed_ranking(teams, ranking_type):
-            results = OrderedDict((
-                (t, (
-                    t.robotics1.get_points(),
-                    t.robotics2.get_points(),
-                    t.robotics3.get_points(),
-                    t.documentarywork.get_points(),
-                    t.poster.get_points()
-                )) for t in teams
-            ))
-            # print('results =', results)
-
-            # compute the ranking points as a matrix arranged by topic first
-            rp_raw = [to_rank_points(pts) for pts in transposed(results.values())]
-            # print('rp_raw =', rp_raw)
-
-            # merge robotics ranking points by summing the first 3 rows
-            intermediate_raw_rp = list(transposed(((sum(l[0:3]), l[3], l[4]) for l in transposed(rp_raw))))
-            # print('intermediate_raw_rp =', intermediate_raw_rp)
-
-            # compute the rankings per rows and save it for later
-            ranking_data = {
-                t: [0] + list(r)  # save first place for general rank which will be computed later
-                for t, r in zip(results.keys(), transposed(to_ranks(rp) for rp in intermediate_raw_rp))
-            }
-            # print('ranking_data =', ranking_data)
-
-            # normalize to ranking points
-            intermediate_rp = [to_rank_points(rp) for rp in intermediate_raw_rp]
-            # print('intermediate_rp =', intermediate_rp)
-
-            # compute the global ranking
-            global_ranking = to_ranks([sum(l) for l in zip(*intermediate_rp)])
-            # print('global_ranking =', global_ranking)
-
-            # differentiate ex-aequo by using the team age bonus
-            by_rank = {
-                g_r: [t for t, t_r in zip(results.keys(), global_ranking) if t_r == g_r]
-                for g_r in global_ranking
-            }
-            for r, teams in by_rank.items():
-                if len(teams) > 1:
-                    teams.sort(key=lambda t: t.grade.bonus, reverse=True)
-                for n, t in enumerate(teams):
-                    ranking_data[t][0] = r + n
-
-            ranks = [
-                Ranking(type_code=ranking_type, team=t,
-                        general=r[0], robotics=r[1], research=r[2], poster=r[3]
-                        )
-                for t, r in ranking_data.items()
-            ]
-            # print('ranks =', ranks)
-
-            # save the result in the db
-            cls.objects.bulk_create(ranks)
-
         cls.objects.all().delete()
         # print("Ranking dataset cleared")
 
         for ranking_type in RankingType:
             if ranking_type != RankingType.Scratch:
-                teams = Team.objects.indexable().filter(category_code=ranking_type.value)
+                teams = Team.objects.filter(category_code=ranking_type.value)
             else:
-                teams = Team.objects.indexable()
-            compute_typed_ranking(teams, ranking_type.value)
+                teams = Team.objects.all()
+            cls.compute_typed_ranking(teams, ranking_type.value)
             # print("%s ranking computed" % ranking_type)
+
+
+def points_or_forfait(team, item_name):
+    try:
+        item = getattr(team, item_name)
+    except AttributeError:
+        return -1
+    else:
+        return item.get_points()
 
 
 def to_ranks(teams_pts):
     """ 
     Given a list of points ordered by team, returns the corresponding list of ranks.
 
-    :param list teams_pts: teams points
+    :param [list|tuple] teams_pts: teams points
     :return: ranking of teams for the provided points
     :rtype: list
     """
@@ -369,7 +378,7 @@ def to_ranks(teams_pts):
 def to_rank_points(teams_pts):
     """
     Given a list of points ordered by team, returns the corresponding list of rank ing points.
-    :param list teams_pts: teams points
+    :param [list|tuple] teams_pts: teams points
     :return: ranking points
     :rtype: list
     """
@@ -380,3 +389,50 @@ def transposed(m):
     return zip(*m)
 
 
+def _print_raw_results(points, ranking_type):
+    if not (DEBUG_COMPUTE_RANKING and points):
+        return
+
+    print('[%s] raw results per team :' % RankingType(ranking_type).name)
+    lines = [
+        '... {team.verbose_name:30s} - {points}'.format(team=team, points=raw_points)
+        for team, raw_points in points.items()
+    ]
+    print('\n'.join(lines))
+
+
+def _print_raw_rank_points_results(points, ranking_type):
+    if not (DEBUG_COMPUTE_RANKING and points):
+        return
+
+    print('[%s] raw rank points per item :' % RankingType(ranking_type).name)
+    lines = [
+        '... {item:30s} - {points}'.format(item=COMPETITION_ITEM_NAMES[i], points=raw_points)
+        for i, raw_points in enumerate(points)
+    ]
+    print('\n'.join(lines))
+
+
+def _print_intermediate_rank_points_results(points, ranking_type):
+    if not (DEBUG_COMPUTE_RANKING and points):
+        return
+
+    item_names = ['robotics'] + COMPETITION_ITEM_NAMES[3:]
+    print('[%s] intermediate rank points per team :' % RankingType(ranking_type).name)
+    lines = [
+        '... {item:30s} - {points}'.format(item=item_names[i], points=raw_points)
+        for i, raw_points in enumerate(points)
+    ]
+    print('\n'.join(lines))
+
+
+def _print_rankings(data, ranking_type, final=False):
+    if not (DEBUG_COMPUTE_RANKING and data):
+        return
+
+    print('[%s] %s rankings per team :' % (RankingType(ranking_type).name, 'final' if final else 'intermediate'))
+    lines = [
+        '... {team.verbose_name:30s} - {data}'.format(team=t, data=ranking_data)
+        for t, ranking_data in data.items()
+    ]
+    print('\n'.join(lines))
