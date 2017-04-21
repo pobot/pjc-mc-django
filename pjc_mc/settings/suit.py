@@ -34,5 +34,6 @@ SUIT_CONFIG = {
             'label': "Contrôle d'accès",
             'icon': 'icon-lock'
         }
-    )
+    ),
+    'LIST_PER_PAGE': 15,
 }
