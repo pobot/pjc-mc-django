@@ -8,7 +8,6 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}?" />
 {% endblock %}
 
-
 {# Additional CSS includes #}
 {#{% block extrastyle %}#}
 {#  <link rel="stylesheet" type="text/css" href="{% static 'css/my_project.css' %}" media="all">#}
@@ -16,9 +15,9 @@
 
 
 {# Additional JS files in footer, right before </body> #}
-{#{% block extrajs %}#}
-{#  <script type="text/javascript" src="{% static 'js/my_project.js' %}"></script>#}
-{#{% endblock %}#}
+{% block extrajs %}
+    <script src="{% static 'js/hide_admin_related_actions.js' %}"></script>
+{% endblock %}
 
 
 {# Footer links (left side) #}
