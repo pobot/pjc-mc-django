@@ -9,9 +9,6 @@ from teams.models import Team
 
 @admin.register(Robotics1, Robotics2, Robotics3)
 class RoboticScoreAdmin(admin.ModelAdmin, ResultsAdminMixin):
-    class Media:
-        js = ("js/hide_foreign_key_links.js",)
-
     list_display = ['verbose_team_name', 'get_points', 'get_detail']
     readonly_fields = ['time', 'get_points']
     ordering = ['team']

@@ -8,9 +8,6 @@ from .models import *
 
 @admin.register(DocumentaryWork)
 class DocumentaryWorkAdmin(admin.ModelAdmin, ResultsAdminMixin):
-    class Media:
-        js = ("js/hide_foreign_key_links.js",)
-
     list_display = ['verbose_team_name', 'get_points', 'get_detail']
     readonly_fields = ['time', 'get_points']
     fieldsets = (
@@ -44,9 +41,6 @@ class DocumentaryWorkAdmin(admin.ModelAdmin, ResultsAdminMixin):
 
 @admin.register(Poster)
 class PosterAdmin(admin.ModelAdmin, ResultsAdminMixin):
-    class Media:
-        js = ("js/hide_foreign_key_links.js",)
-
     list_display = ['verbose_team_name', 'get_points', 'get_detail']
     readonly_fields = ['get_points']
     fieldsets = (

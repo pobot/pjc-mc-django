@@ -20,9 +20,6 @@ class VerboseTeamNameMixin(object):
 
 @admin.register(Planning)
 class TeamPlanningAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
-    class Media:
-        js = ("js/hide_foreign_key_links.js",)
-
     list_display = ['verbose_team_name']
 
     class CustomChangeList(ChangeList):
