@@ -186,3 +186,4 @@ tags
 !/apps/docmaker/generators/
 .idea
 /doc/
+/static/docs/rules.pdf
