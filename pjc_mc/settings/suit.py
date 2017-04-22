@@ -12,21 +12,21 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'match',
-            'icon': 'icon-flag'
+            'icon': 'icon-chevron-right'
         },
         {
             'app': 'research',
-            'icon': 'icon-bullhorn'
+            'icon': 'icon-chevron-right'
         },
         '-',
         {
             'app': 'event',
-            'icon': 'icon-time',
+            'icon': 'icon-flag',
             'models': ('Planning', 'PlanningControl', 'Ranking')
         },
         {
             'app': 'display',
-            'icon': 'icon-film'
+            'icon': 'icon-picture'
         },
         '-',
         {
