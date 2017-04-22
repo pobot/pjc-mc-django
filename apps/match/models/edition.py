@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 from match.models.generic import RoboticsMatch, MSG_COUNTS_MISMATCH, MatchDurationField, MATCH_DURATION
@@ -23,11 +24,12 @@ class Robotics1(RoboticsMatch):
     )
     variants = models.PositiveSmallIntegerField(
         verbose_name='variantes',
+        validators=[MaxValueValidator(MAX_VARIANTS)],
         default=0,
     )
 
     def clean(self):
-        if self.variants and self.variants > (self.trips - 1) // 2:
+        if self.variants and self.variants > self.trips - 1:
             raise ValidationError({
                 'variants': MSG_COUNTS_MISMATCH,
                 'trips': MSG_COUNTS_MISMATCH
