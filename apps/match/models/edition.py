@@ -9,14 +9,13 @@ from match.models.generic import RoboticsMatch, MSG_COUNTS_MISMATCH, MatchDurati
 __author__ = 'Eric Pascual'
 
 
-class Robotics1(RoboticsMatch):
+class TripAndVariantMatch(RoboticsMatch):
     TRIP_POINTS = 1
     VARIANT_BONUS = 5
     MAX_VARIANTS = 2
 
     class Meta:
-        verbose_name = 'résultat épreuve 1'
-        verbose_name_plural = 'résultats épreuve 1'
+        abstract = True
 
     trips = models.PositiveSmallIntegerField(
         verbose_name='trajets',
@@ -29,11 +28,19 @@ class Robotics1(RoboticsMatch):
     )
 
     def clean(self):
+        super().clean()
+
         if self.variants and self.variants > self.trips - 1:
             raise ValidationError({
                 'variants': MSG_COUNTS_MISMATCH,
                 'trips': MSG_COUNTS_MISMATCH
             })
+
+    def get_points(self):
+        """ Counts 1 point per trip and 5 points per variant """
+        return \
+            self.trips * self.TRIP_POINTS + \
+            self.variants * self.VARIANT_BONUS
 
     @classmethod
     def mission_complete_credit(cls):
@@ -41,10 +48,11 @@ class Robotics1(RoboticsMatch):
         """
         return None
 
-    def get_points(self):
-        """ Counts 1 point per trip and 5 points per variant """
-        return self.trips * self.TRIP_POINTS + \
-               self.variants * self.VARIANT_BONUS
+
+class Robotics1(TripAndVariantMatch):
+    class Meta:
+        verbose_name = 'résultat épreuve 1'
+        verbose_name_plural = 'résultats épreuve 1'
 
     def get_detail(self):
         return "trajets : {self.trips}, variantes : {self.variants}".format(self=self)
@@ -135,52 +143,33 @@ class Robotics2(RoboticsMatch):
         return "{actions}, bonus temps : {bonus}".format(actions=actions, bonus=bonus) if bonus else actions
 
 
-class Robotics3(RoboticsMatch):
+class Robotics3(TripAndVariantMatch):
     TRIP_POINTS = 2
     MAX_TRIPS = 3
     MOVED_OBSTACLE_PENALTY = 1
-    MAX_VARIANTS = 2
-    VARIANT_BONUS = 5
 
     class Meta:
         verbose_name = 'résultat épreuve 3'
         verbose_name_plural = 'résultats épreuve 3'
 
-    trips = models.PositiveSmallIntegerField(
-        verbose_name='trajets',
-        default=0,
-    )
-    variants = models.PositiveSmallIntegerField(
-        verbose_name='variantes',
-        default=0,
-    )
     moved_obstacles = models.PositiveSmallIntegerField(
         verbose_name='obstacles déplacés',
         default=0,
     )
 
     def clean(self):
-        if self.variants and self.variants > (self.trips - 1) // 2:
-            raise ValidationError({
-                "trips": MSG_COUNTS_MISMATCH,
-                "variants": MSG_COUNTS_MISMATCH,
-            })
+        super().clean()
+
         if self.moved_obstacles > self.trips:
             raise ValidationError({
                 "trips": MSG_COUNTS_MISMATCH,
                 "moved_obstacles": MSG_COUNTS_MISMATCH,
             })
 
-    @classmethod
-    def mission_complete_credit(cls):
-        """ There is not such a concept here, the mission being to do as many travels as possible.
-        """
-        return None
-
     def get_points(self):
-        return self.trips * self.TRIP_POINTS + \
-               self.variants * self.VARIANT_BONUS - \
-               self.moved_obstacles * self.MOVED_OBSTACLE_PENALTY
+        return \
+            super().get_points() + \
+            self.moved_obstacles * self.MOVED_OBSTACLE_PENALTY
 
     def get_detail(self):
         return "trajets : {self.trips}, variantes : {self.variants}, obstacles déplacés : {self.moved_obstacles}"\
