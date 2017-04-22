@@ -168,7 +168,7 @@ class Robotics3(TripAndVariantMatch):
 
     def get_points(self):
         return \
-            super().get_points() + \
+            super().get_points() - \
             self.moved_obstacles * self.MOVED_OBSTACLE_PENALTY
 
     def get_detail(self):
