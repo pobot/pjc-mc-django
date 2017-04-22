@@ -185,3 +185,4 @@ tags
 !/apps/display/static/display/js/bootstrap.min.js
 !/apps/docmaker/generators/
 .idea
+/doc/
