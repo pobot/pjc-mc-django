@@ -19,7 +19,7 @@ from pjc_mc import version
 
 __author__ = 'Eric Pascual'
 
-logger = logging.getLogger('django.' + __name__)
+logger = logging.getLogger('pjc.' + __name__)
 logger.setLevel(logging.INFO)
 
 
@@ -81,6 +81,11 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Résultats enregistrés.')
+        logger.info('résultats match {match} équipe {team.num} ({team.name}) enregistrés par {referee}'.format(
+            match=self.match_num,
+            team=form.instance.team,
+            referee=self.request.user.username
+        ))
         return response
 
     def get_context_data(self, **kwargs):
