@@ -40,7 +40,7 @@ persistence des données, du serveur Web, de la gestion des utilisateurs,...
 
 Des évolutions fonctionnelles majeures ont de plus été ajoutées :
 * la saisie en temps réel des résultats de match **directement par les arbitres** depuis 
-leurs smartphones 
+leurs smartphones (voir la page _Screenshots_ du Wiki projet)
 * la gestion de plusieurs catégories de classement, maintenant que les robots à base
 d'Arduino peuvent concourir aux côtés des ceux en Mindstorms.
 
