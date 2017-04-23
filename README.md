@@ -8,7 +8,7 @@ Ce projet est la nouvelle version du système de gestion
 de notre compétition POBOT Junior Cup. Le projet de départ est disponible
 dans le repository **pobot/POBOT_Junior_Cup** (https://github.com/pobot/POBOT_Junior_Cup)
 
-## Avertissement
+## Avertissement
 
 Comme pour le projet précédent, il ne s'agit nullement d'un système prêt à l'emploi
 pour d'autres contextes d'utilisation, mais uniquement d'un exemple de vraie application
@@ -36,7 +36,7 @@ persistence des données, du serveur Web, de la gestion des utilisateurs,...
 équivalent représenterait des mois de travail
 * pour le fun
 
-### Fonctionnelles
+### Fonctionnelles
 
 Des évolutions fonctionnelles majeures ont de plus été ajoutées :
 * la saisie en temps réel des résultats de match **directement par les arbitres** depuis 
