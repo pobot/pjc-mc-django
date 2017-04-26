@@ -17,6 +17,8 @@ class JuryFormGenerator(TeamReportGenerator):
     output_file_name = 'jury_forms'
     description = "individual team jury form"
 
+    H_UNIT = 6.7 / 4 * inch
+
     def body_story(self, team):
         def table_items():
             yield Paragraph(
@@ -45,7 +47,7 @@ class JuryFormGenerator(TeamReportGenerator):
                 [
                     ['Numéro du jury', '']
                 ],
-                colWidths=[(6.7 - 2.38) * inch, 2.38 * inch],
+                colWidths=[2 * self.H_UNIT] * 2,
                 style=default_table_style + [
                     ('BACKGROUND', (0, 0), (0, 0), cell_bkgnd_color),
                     ('ALIGN', (0, 0), (0, 0), 'RIGHT')
@@ -59,7 +61,7 @@ class JuryFormGenerator(TeamReportGenerator):
             tables_spacer,
             Table(
                 [(_, '') for _ in table_items()],
-                colWidths=[6 * inch, 0.7 * inch],
+                colWidths=[3 * self.H_UNIT, self.H_UNIT],
                 style=default_table_style + [
                     ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
                 ]
