@@ -12,19 +12,20 @@ from docmaker.generators.stand_labels import StandLabelGenerator
 from docmaker.generators.planning import PlanningGenerator
 from docmaker.generators.teams_list import TeamsListGenerator
 from docmaker.generators.signs import SignsGenerator
+from docmaker.generators.match_forms import RoboticsMatchFormGenerator
 
 __author__ = 'Eric Pascual'
 
 SCRIPT_HOME = os.path.dirname(__file__)
 
 _generators = {
-    # 'm': (generate_match_sheets, 'match sheets', 'match_sheets', portrait(A4)),
     'j': JuryFormGenerator,
     'a': ApprovalFormGenerator,
     'l': StandLabelGenerator,
     'p': PlanningGenerator,
     't': TeamsListGenerator,
     's': SignsGenerator,
+    'r': RoboticsMatchFormGenerator,
 }
 
 
