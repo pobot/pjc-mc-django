@@ -19,26 +19,26 @@ class JuryFormGenerator(TeamReportGenerator):
 
     def body_story(self, team):
         def table_items():
-                yield Paragraph(
-                    "Pertinence du sujet sélectionné",
-                    style=cell_body
-                )
-                yield Paragraph(
-                    "Qualité du travail de documentation",
-                    style=cell_body
-                )
-                yield Paragraph(
-                    "Qualité de la présentation",
-                    style=cell_body
-                )
-                yield Paragraph(
-                    "Expression orale",
-                    style=cell_body
-                )
-                yield Paragraph(
-                    "Réponse aux questions",
-                    style=cell_body
-                )
+            yield Paragraph(
+                "Pertinence du sujet sélectionné",
+                style=cell_body
+            )
+            yield Paragraph(
+                "Qualité du travail de documentation",
+                style=cell_body
+            )
+            yield Paragraph(
+                "Qualité de la présentation",
+                style=cell_body
+            )
+            yield Paragraph(
+                "Expression orale",
+                style=cell_body
+            )
+            yield Paragraph(
+                "Réponse aux questions",
+                style=cell_body
+            )
 
         for _ in (
             Table(
