@@ -26,7 +26,7 @@ class ApprovalFormGenerator(TeamReportGenerator):
     def body_story(self, team):
         def general_items():
             yield Paragraph(
-                "L'équipe a désigné un capitaine qui s'est présenté aux organisateurs",
+                "L'équipe a désigné un(e) capitaine qui s'est présenté(e) aux organisateurs",
                 style=cell_body
             )
             yield Paragraph(
@@ -35,8 +35,13 @@ class ApprovalFormGenerator(TeamReportGenerator):
                 style=cell_body
             )
             yield Paragraph(
-                "L'équipe a bien compris qu'elle ne pourra être classée que si elle s'est présentée "
-                "à toutes les épreuves de robotique, à la présentation de son exposé et a remis son poster",
+                "L'équipe a bien compris que ne pas se présenter à l'exposé ou ne pas remettre le poster "
+                "empêche tout classement dans la compétition",
+                style=cell_body
+            )
+            yield Paragraph(
+                "L'équipe a bien compris que ne pas se présenter à une épreuve correspond à un forfait "
+                "et qu'elle sera classée derrière toutes les autres pour cette épreuve",
                 style=cell_body
             )
 
