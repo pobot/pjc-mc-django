@@ -32,7 +32,7 @@ class Command(BaseCommand):
             Team(name="Wizzbot", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
             Team(name="Green Studio", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
             Team(name="Blank", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
-            Team(name="Bang Schnecke", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
+            Team(name="Echo", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
             Team(name="Gear", grade=Grade.seconde, category=Category.Mindstorms, school=liv),
         ])
 
@@ -45,10 +45,10 @@ class Command(BaseCommand):
         st_joseph = School.objects.get(name="Lycée St Joseph")
         teams.extend([
             Team(name="PoweRobot", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
-            Team(name="2ndC1", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
+            Team(name="Securi-Bot", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
             Team(name="SEJO Haspatech", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
             Team(name="EuskalRobota", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
-            Team(name="2ndSTGA", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
+            Team(name="Azkargeek", grade=Grade.seconde, category=Category.Mindstorms, school=st_joseph),
         ])
 
         st_ph_neri = School.objects.get(name="Collège St Philippe Neri")
@@ -58,8 +58,8 @@ class Command(BaseCommand):
 
         emile_roux = School.objects.get(name="Collège Emile Roux")
         teams.extend([
-            Team(name="MEDITES", grade=Grade.quatrieme, category=Category.Mindstorms, school=emile_roux),
-            Team(name="Club Rob", grade=Grade.cinquieme, category=Category.Arduino, school=emile_roux),
+            Team(name="Emibot 1.0", grade=Grade.quatrieme, category=Category.Mindstorms, school=emile_roux),
+            Team(name="Emibot 2.0", grade=Grade.cinquieme, category=Category.Arduino, school=emile_roux),
         ])
 
         Team.objects.bulk_create(teams)
