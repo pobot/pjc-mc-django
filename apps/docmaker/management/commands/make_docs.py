@@ -13,6 +13,8 @@ from docmaker.generators.planning import PlanningGenerator
 from docmaker.generators.teams_list import TeamsListGenerator
 from docmaker.generators.signs import SignsGenerator
 from docmaker.generators.match_forms import RoboticsMatchFormGenerator
+from docmaker.generators.certificates import CertificateGenerator
+from docmaker.generators.poster_evaluation import PostersEvalGridGenerator
 
 __author__ = 'Eric Pascual'
 
@@ -26,6 +28,8 @@ _generators = {
     't': TeamsListGenerator,
     's': SignsGenerator,
     'r': RoboticsMatchFormGenerator,
+    'c': CertificateGenerator,
+    'g': PostersEvalGridGenerator,
 }
 
 
