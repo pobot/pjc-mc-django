@@ -1,5 +1,6 @@
 * {
-    font-size: 117%;
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 115%;
 }
 
 @media screen and (min-width: 600px) {
