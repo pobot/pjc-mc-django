@@ -1,5 +1,5 @@
 * {
-    font-family: "DejaVu Sans", sans-serif;
+    font-family: "Droid Sans", sans-serif;
     font-size: 115%;
 }
 
@@ -27,10 +27,12 @@
 }
 
 .jumbotron {
+    font-family: "Droid Sans", sans-serif;
     text-align: center;
 }
 
 .navbar {
+    font-family: "Droid Sans", sans-serif;
     padding: 0 2%;
 }
 
@@ -45,6 +47,7 @@ h1 {
 }
 
 div.navbar h2 {
+    font-family: "Droid Sans", sans-serif;
     font-weight: bold;
     color: silver;
 }
@@ -133,8 +136,8 @@ table.final-ranking tr.winner th {
 
 th.team-name, td.team-name {
     white-space: nowrap;
-    min-width: 20em;
-    max-width: 20em;
+    min-width: 15em;
+    max-width: 15em;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
