@@ -1,0 +1,6 @@
+@xset -dpms
+@xset s off
+@xset s noblank
+@unclutter
+/home/pi/start-tv-display.sh
+
