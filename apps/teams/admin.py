@@ -31,7 +31,7 @@ class ResultsAdminMixin(object):
 def check_in(modeladmin, request, queryset):
     queryset.update(present=True)
 
-check_in.short_description = "Marque les équipes sélectionnées comme présentes"
+check_in.short_description = "Pointer les équipes sélectionnées"
 
 
 @admin.register(Team)
