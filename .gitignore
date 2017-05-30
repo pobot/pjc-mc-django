@@ -180,7 +180,7 @@ tags
 
 ### Project specific
 /staticfiles/
-/db.sqlite3
+/*.sqlite3
 !/apps/teams/
 !/apps/display/static/display/js/bootstrap.min.js
 !/apps/docmaker/generators/
