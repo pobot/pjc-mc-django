@@ -118,8 +118,13 @@ class ScoresContentProvider(object):
 
         names = [team.verbose_name for team in teams]
         points = [[get_robotics_points(team, n) for n in range(1, 4)] for team in teams]
-        best_scores = [max((vv for vv in v if isinstance(vv, int))) for v in list(zip(*points))]
-        qual_points = [[(pts, pts == best) for pts, best in zip(team_points, best_scores)] for team_points in points]
+        try:
+            best_scores = [max((vv for vv in v if isinstance(vv, int))) for v in list(zip(*points))]
+        except ValueError:
+            # happens when there is not yet enough data for being able to compute max
+            qual_points = [[(pts, False) for pts in team_points] for team_points in points]
+        else:
+            qual_points = [[(pts, pts == best) for pts, best in zip(team_points, best_scores)] for team_points in points]
 
         return list(zip(names, qual_points))
 
