@@ -347,9 +347,9 @@ class Ranking(models.Model):
 
         for ranking_type in RankingType:
             if ranking_type != RankingType.Scratch:
-                teams = Team.objects.filter(category_code=ranking_type.value)
+                teams = Team.objects.filter(present=True, category_code=ranking_type.value)
             else:
-                teams = Team.objects.all()
+                teams = Team.objects.filter(present=True)
             cls.compute_typed_ranking(teams, ranking_type.value)
             # print("%s ranking computed" % ranking_type)
 
@@ -377,12 +377,15 @@ def to_ranks(teams_pts):
 
 def to_rank_points(teams_pts):
     """
-    Given a list of points ordered by team, returns the corresponding list of rank ing points.
+    Given a list of points ordered by team, returns the corresponding list of ranking points.
+
+    Teams not having participated to a given item are credited 0 points for it.
+
     :param [list|tuple] teams_pts: teams points
     :return: ranking points
     :rtype: list
     """
-    return [len(teams_pts) + 1 - rank for rank in to_ranks(teams_pts)]
+    return [(len(teams_pts) + 1 - rank) if pts >= 0 else 0 for rank, pts in zip(to_ranks(teams_pts), teams_pts)]
 
 
 def transposed(m):
