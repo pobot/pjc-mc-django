@@ -9,4 +9,4 @@ __author__ = 'Eric Pascual'
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        Ranking.compute()
+        Ranking.compute(verbose=True)

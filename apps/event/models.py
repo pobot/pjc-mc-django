@@ -289,26 +289,30 @@ class Ranking(models.Model):
             format(self=self)
 
     @classmethod
-    def compute_typed_ranking(cls, teams, ranking_type):
+    def compute_typed_ranking(cls, teams, ranking_type, verbose=False):
         results = OrderedDict((
             (t, [points_or_forfait(t, item) for item in COMPETITION_ITEM_NAMES]) for t in teams
         ))
-        _print_raw_results(results, ranking_type)
+        if verbose:
+            _print_raw_results(results, ranking_type)
 
         # compute the ranking points as a matrix arranged by topic first
         rp_raw = [to_rank_points(pts) for pts in transposed(results.values())]
-        _print_raw_rank_points_results(rp_raw, ranking_type)
+        if verbose:
+            _print_raw_rank_points_results(rp_raw, ranking_type)
 
         # merge robotics ranking points by summing the first 3 rows
         intermediate_raw_rp = list(transposed(((sum(l[0:3]), l[3], l[4]) for l in transposed(rp_raw))))
-        _print_intermediate_rank_points_results(intermediate_raw_rp, ranking_type)
+        if verbose:
+            _print_merged_rank_points_results(intermediate_raw_rp, ranking_type)
 
         # compute the rankings per rows and save it for later
         ranking_data = {
             t: [0] + list(r)  # pre-allocate the first slot for the general rank which will be computed later
             for t, r in zip(results.keys(), transposed(to_ranks(rp) for rp in intermediate_raw_rp))
         }
-        _print_rankings(ranking_data, ranking_type)
+        if verbose:
+            _print_rankings(ranking_data, ranking_type)
 
         # normalize to ranking points
         intermediate_rp = [to_rank_points(rp) for rp in intermediate_raw_rp]
@@ -341,17 +345,19 @@ class Ranking(models.Model):
         cls.objects.bulk_create(ranks)
 
     @classmethod
-    def compute(cls):
+    def compute(cls, verbose=False):
         cls.objects.all().delete()
-        # print("Ranking dataset cleared")
+        if verbose:
+            print("Ranking dataset cleared")
 
         for ranking_type in RankingType:
             if ranking_type != RankingType.Scratch:
                 teams = Team.objects.filter(present=True, category_code=ranking_type.value)
             else:
                 teams = Team.objects.filter(present=True)
-            cls.compute_typed_ranking(teams, ranking_type.value)
-            # print("%s ranking computed" % ranking_type)
+            cls.compute_typed_ranking(teams, ranking_type.value, verbose)
+            if verbose:
+                print("[%s] ranking computed" % ranking_type.name)
 
 
 def points_or_forfait(team, item_name):
@@ -393,7 +399,7 @@ def transposed(m):
 
 
 def _print_raw_results(points, ranking_type):
-    if not (DEBUG_COMPUTE_RANKING and points):
+    if not points:
         return
 
     print('[%s] raw results per team :' % RankingType(ranking_type).name)
@@ -405,7 +411,7 @@ def _print_raw_results(points, ranking_type):
 
 
 def _print_raw_rank_points_results(points, ranking_type):
-    if not (DEBUG_COMPUTE_RANKING and points):
+    if not points:
         return
 
     print('[%s] raw rank points per item :' % RankingType(ranking_type).name)
@@ -416,12 +422,12 @@ def _print_raw_rank_points_results(points, ranking_type):
     print('\n'.join(lines))
 
 
-def _print_intermediate_rank_points_results(points, ranking_type):
-    if not (DEBUG_COMPUTE_RANKING and points):
+def _print_merged_rank_points_results(points, ranking_type):
+    if not points:
         return
 
     item_names = ['robotics'] + COMPETITION_ITEM_NAMES[3:]
-    print('[%s] intermediate rank points per team :' % RankingType(ranking_type).name)
+    print('[%s] merged rank points :' % RankingType(ranking_type).name)
     lines = [
         '... {item:30s} - {points}'.format(item=item_names[i], points=raw_points)
         for i, raw_points in enumerate(points)
@@ -430,7 +436,7 @@ def _print_intermediate_rank_points_results(points, ranking_type):
 
 
 def _print_rankings(data, ranking_type, final=False):
-    if not (DEBUG_COMPUTE_RANKING and data):
+    if not data:
         return
 
     print('[%s] %s rankings per team :' % (RankingType(ranking_type).name, 'final' if final else 'intermediate'))
