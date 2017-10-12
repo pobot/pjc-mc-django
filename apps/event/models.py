@@ -290,6 +290,8 @@ class Ranking(models.Model):
 
     @classmethod
     def compute_typed_ranking(cls, teams, ranking_type, verbose=False):
+        # TODO add 1st position ex-aequo removal for research and poster
+
         results = OrderedDict((
             (t, [points_or_forfait(t, item) for item in COMPETITION_ITEM_NAMES]) for t in teams
         ))
@@ -320,16 +322,27 @@ class Ranking(models.Model):
 
         # compute the global ranking
         global_ranking = to_ranks([sum(l) for l in zip(*intermediate_rp)])
-        # print('global_ranking =', global_ranking)
+        # if verbose:
+        #     print('global_ranking =', global_ranking)
 
-        # differentiate ex-aequo by using the team age bonus
+        # differentiate 1st position ex-aequo by using the team age bonus
         by_rank = {
             g_r: [t for t, t_r in zip(results.keys(), global_ranking) if t_r == g_r]
             for g_r in global_ranking
         }
+        if verbose:
+            _print_by_rank(by_rank, ranking_type)
+
+        teams = by_rank[1]
+        if len(teams) > 1:
+            teams.sort(key=lambda t: t.grade.bonus, reverse=True)
+            by_rank[1] = teams[:1]
+            by_rank[2] = teams[1:]
+
+            if verbose:
+                _print_by_rank(by_rank, ranking_type, ex_aequo_removed=True)
+
         for r, teams in by_rank.items():
-            if len(teams) > 1:
-                teams.sort(key=lambda t: t.grade.bonus, reverse=True)
             for t in teams:
                 ranking_data[t][0] = r
 
@@ -355,10 +368,15 @@ class Ranking(models.Model):
                 teams = Team.objects.filter(present=True, category_code=ranking_type.value)
             else:
                 teams = Team.objects.filter(present=True)
-            cls.compute_typed_ranking(teams, ranking_type.value, verbose)
-            if verbose:
-                print("[%s] ranking computed" % ranking_type.name)
-
+            if teams:
+                if verbose:
+                    print("[%s] --- ranking computation started" % ranking_type.name)
+                cls.compute_typed_ranking(teams, ranking_type.value, verbose)
+                if verbose:
+                    print("[%s] --- ranking computation complete" % ranking_type.name)
+            else:
+                if verbose:
+                    print("[%s] !!! no team for this category" % ranking_type.name)
 
 def points_or_forfait(team, item_name):
     try:
@@ -385,7 +403,7 @@ def to_rank_points(teams_pts):
     """
     Given a list of points ordered by team, returns the corresponding list of ranking points.
 
-    Teams not having participated to a given item are credited 0 points for it.
+    Teams not having participated to a given item are credited no point for it.
 
     :param [list|tuple] teams_pts: teams points
     :return: ranking points
@@ -443,5 +461,17 @@ def _print_rankings(data, ranking_type, final=False):
     lines = [
         '... {team.verbose_name:30s} - {data}'.format(team=t, data=ranking_data)
         for t, ranking_data in data.items()
+    ]
+    print('\n'.join(lines))
+
+
+def _print_by_rank(data, ranking_type, ex_aequo_removed=False):
+    if not data:
+        return
+
+    print('[%s] teams by rank %s:' % (RankingType(ranking_type).name, '(ex-aequo removed)' if ex_aequo_removed else ''))
+    lines = [
+        '... {rank:2d} - {teams}'.format(rank=rank, teams=teams)
+        for rank, teams in data.items()
     ]
     print('\n'.join(lines))
