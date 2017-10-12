@@ -114,7 +114,7 @@ class RankingCatFilter(admin.SimpleListFilter):
 
 @admin.register(Ranking)
 class RankingDisplayAdmin(admin.ModelAdmin):
-    list_display = ['team', 'team_cat', 'general', 'robotics', 'research', 'poster']
+    list_display = ['team', 'team_grade', 'team_cat', 'general', 'robotics', 'research', 'poster']
     readonly_fields = list_display
     list_filter = [RankingCatFilter]
     list_display_links = None
@@ -134,6 +134,11 @@ class RankingDisplayAdmin(admin.ModelAdmin):
         return obj.team.category.name
 
     team_cat.short_description = 'catégorie'
+
+    def team_grade(self, obj):
+        return obj.team.grade.abbrev
+
+    team_grade.short_description = 'classe'
 
     def get_queryset(self, request):
         self.request = request
