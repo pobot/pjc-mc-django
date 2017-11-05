@@ -9,14 +9,18 @@
 {% endblock %}
 
 {# Additional CSS includes #}
-{#{% block extrastyle %}#}
+{% block extrastyle %}
 {#  <link rel="stylesheet" type="text/css" href="{% static 'css/my_project.css' %}" media="all">#}
-{#{% endblock %}#}
+<style>
+    .delete-related {
+        display: none;
+    }
+</style>
+{% endblock %}
 
 {# Additional JS files in footer, right before </body> #}
-{% block extrajs %}
-    <script src="{% static 'js/hide_admin_related_actions.js' %}"></script>
-{% endblock %}
+{#{% block extrajs %}#}
+{#{% endblock %}#}
 
 
 {# Footer links (left side) #}
