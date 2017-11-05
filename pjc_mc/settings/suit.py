@@ -7,7 +7,8 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'teams',
-            'icon': 'icon-user'
+            'icon': 'icon-user',
+            'models': ('Team', 'School', 'TeamContact')
         },
         '-',
         {
