@@ -188,3 +188,4 @@ tags
 /docs/
 /static/docs/rules.pdf
 !/docs/
+.idea
