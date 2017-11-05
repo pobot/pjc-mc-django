@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
+from django.db.models import DateField
+
+from suit.widgets import SuitDateWidget
 
 from .models import *
 
@@ -31,31 +34,57 @@ class ResultsAdminMixin(object):
 def check_in(modeladmin, request, queryset):
     queryset.update(present=True)
 
+
 check_in.short_description = "Pointer les équipes sélectionnées"
+
+
+class TeamMemberInlineModelAdmin(admin.TabularInline):
+    model = TeamMember
+    suit_classes = 'suit-tab suit-tab-members'
+    formfield_overrides = {
+        DateField: {
+           'widget': SuitDateWidget
+        }
+    }
+
+    class Media:
+        css = {
+            "all": ["/static/admin/css/team_member-inline.css"]
+        }
 
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     readonly_fields = ['num', 'match1_summary', 'match2_summary', 'match3_summary', 'research_summary',
-                       'poster_summary']
+                       'poster_summary', 'average_age', 'grade_extent']
     fieldsets = (
         (None, {
-            'fields': ('num', 'name', 'school', 'grade_code', 'category_code', 'present')
+            'classes': ('suit-tab', 'suit-tab-general'),
+            'fields': ('num', 'name', 'school', 'category_code', 'contact', 'present', 'average_age', 'grade_extent')
         }),
         ('Robotique', {
+            'classes': ('suit-tab', 'suit-tab-results'),
             'fields': ('match1_summary', 'match2_summary', 'match3_summary')
         }),
         ('Exposé', {
+            'classes': ('suit-tab', 'suit-tab-results'),
             'fields': ('research_summary',)
         }),
         ('Poster', {
+            'classes': ('suit-tab', 'suit-tab-results'),
             'fields': ('poster_summary',)
         }),
     )
-    list_display = ['verbose_team_name', 'unsortable_school', 'grade_abbrev', '_category', '_present']
+    list_display = ['verbose_team_name', 'unsortable_school', '_category', '_present']
     list_filter = ['category_code', 'school', 'school__city', 'present']
     ordering = None
     actions = [check_in]
+    inlines = [TeamMemberInlineModelAdmin]
+    suit_form_tabs = (
+        ('general', 'Informations générales'),
+        ('members', 'Composition'),
+        ('results', 'Résultats'),
+    )
 
     class CustomChangeList(ChangeList):
         def __init__(self, *args, **kwargs):
@@ -68,7 +97,7 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['school'].widget.attrs['style'] = 'width: 30em'
-        for field in ('category_code', 'grade_code'):
+        for field in ('category_code', ):
             form.base_fields[field].widget.attrs['style'] = 'width: 10em'
         return form
 
@@ -76,11 +105,6 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
         return obj.school
 
     unsortable_school.short_description = 'Etablissement scolaire'
-
-    def grade_abbrev(self, obj: Team):
-        return obj.grade.abbrev
-
-    grade_abbrev.short_description = 'Niveau'
 
     def match1_summary(self, obj: Team):
         return obj.robotics1.summary
@@ -118,6 +142,33 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     _present.short_description = 'Présente'
     _present.boolean = True
 
+    def average_age(self, obj: Team):
+        return round(obj.average_age, 1)
+
+    average_age.short_description = 'Age moyen'
+
+    def grade_extent(self, obj: Team):
+        extent = obj.grade_extent
+        if extent:
+            min_grade, max_grade = extent['min_grade'], extent['max_grade']     # type: Grade
+            if min_grade == max_grade:
+                return min_grade.name
+            else:
+                return f"{min_grade.abbrev} - {max_grade.abbrev}"
+        else:
+            return ""
+
+    grade_extent.short_description = 'niveau scolaire'
+
+    category_css_class = {
+        Category.Mindstorms: 'info',
+        Category.Arduino: 'success',
+        Category.RaspberryPi: 'warning'
+    }
+
+    def suit_row_attributes(self, obj, request):
+        return {'class': self.category_css_class[obj.category]}
+
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -133,8 +184,22 @@ class SchoolAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        for field in ('name', 'city'):
+        for field in ('name', 'address', 'city', 'email'):
             form.base_fields[field].widget.attrs['style'] = 'width: 30em'
         form.base_fields['zip_code'].widget.attrs['style'] = 'width: 5em'
         return form
 
+
+class TeamInlineModelAdmin(admin.TabularInline):
+    model = Team
+    readonly_fields = fields = ['name']
+    can_delete = False
+    show_change_link = True
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(TeamContact)
+class TeamContactAdmin(admin.ModelAdmin):
+    inlines = [TeamInlineModelAdmin]
