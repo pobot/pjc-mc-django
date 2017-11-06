@@ -28,22 +28,35 @@
                 </div>
             </div>
         {% endif %}
-        {% if not form.errors %}
-        <div id="stopwatch" class="well well-sm">
-            <div class="text-center"><span id="sw_time" class="h1">2:30</span></div>
-            <div class="btn-group btn-group-justified" role="group">
-                <a id="sw_start" href="#" class="btn btn-success">Start</a>
-                <a id="sw_stop" href="#" class="btn btn-danger disabled">Stop</a>
+        <div id="team_dependant">
+            {% if not form.errors %}
+                <div class="container row">
+                    <div id="wallclock" class="col col-xs-6 well well-sm">
+                        <div class="text-center"><span id="wc_time" class="h1">10:00</span></div>
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a id="wc_start" href="#" class="btn btn-success">Equipe arrivée</a>
+                        </div>
+                    </div>
+                    <div id="stopwatch" class="col col-xs-6 well well-sm">
+                        <div class="text-center"><span id="sw_time" class="h1">2:30</span></div>
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a id="sw_start" href="#" class="btn btn-success">Start</a>
+                            <a id="sw_stop" href="#" class="btn btn-danger disabled">Stop</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for field in form %}
+                {% bootstrap_field field exclude='team' layout='horizontal' %}
+            {% endfor %}
+            <div class="well well-sm btn-group btn-group-justified" role="group">
+                {% bootstrap_button "Terminé" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
+                {% url 'refereeing:home' as home_url %}
+                {% bootstrap_button "Annuler" href=home_url icon="remove" button_class="btn-default"%}
+                {% if multi_trials_allowed %}
+                    {% bootstrap_button "Reset" id="reset" href="#" icon="reset" button_class="btn-warning" %}
+                {% endif %}
             </div>
-        </div>
-        {% endif %}
-        {% for field in form %}
-            {% bootstrap_field field exclude='team' layout='horizontal' %}
-        {% endfor %}
-        <div class="well well-sm btn-group btn-group-justified" role="group">
-            {% bootstrap_button "Enregistrer" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
-            {% url 'refereeing:home' as home_url %}
-            {% bootstrap_button "Annuler" href=home_url icon="remove" button_class="btn-default"%}
         </div>
     </form>
 {% endblock %}
