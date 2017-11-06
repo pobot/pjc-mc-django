@@ -24,6 +24,7 @@ logger.setLevel(logging.INFO)
 
 
 class AppMixin(ContextMixin):
+    """ This mixin injects application wide data, such the title and the version """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
@@ -34,6 +35,7 @@ class AppMixin(ContextMixin):
 
 
 class MatchMixin(ContextMixin):
+    """ This mixin injects the appropriate title based on the involved match"""
     match_num = None
 
     def get_context_data(self, **kwargs):
@@ -45,12 +47,14 @@ class MatchMixin(ContextMixin):
 
 
 class LoginForm(AuthenticationForm):
+    """ Customized login form with selection of the user via a combo initialized with referees only """
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
         self.fields['username'] = ChoiceField(
-            choices=((user.username, user.username)
-                     for user in User.objects.filter(groups__name='Arbitres').order_by('username')
-                     )
+            choices=(
+                (user.username, user.username)
+                 for user in User.objects.filter(groups__name__icontains='arbitre').order_by('username')
+            )
         )
 
 
@@ -70,6 +74,8 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     random_configuration = False
     # set this to the field storing the time used by the robot to complete the round if relevant
     used_time_field = None
+    # tells if multiple trials are allowed for the match
+    multi_trials_allowed = False
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -93,6 +99,7 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
             'match_num': self.match_num,
             'random_config': self.random_configuration,
             'used_time_field': self.used_time_field or '',
+            'multi_trials_allowed': self.multi_trials_allowed,
         })
         return super().get_context_data(**kwargs)
 
