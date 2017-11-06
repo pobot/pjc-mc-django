@@ -1,9 +1,37 @@
 $(document).ready(function() {
-    var $sw_start = $("#sw_start");
-    var $sw_stop = $("#sw_stop");
+    // stop watch
+    var $btn_sw_start = $("#sw_start");
+    var $btn_sw_stop = $("#sw_stop");
     var $sw_time = $("#sw_time");
-    var countdown = 150;
+
+    var MATCH_DURATION = 150;   // 2mn30
+    var countdown = MATCH_DURATION;
     var countdown_running = false;
+
+    // wall clock
+    var $btn_wc_start = $("#wc_start");
+    var $wc_time = $("#wc_time");
+
+    var wc_countdown = 10 * 60;     // 10mn
+    var wc_staging_limit = 7 * 60;
+    var wc_staging_warning = 7 * 60 + 30;
+    var wc_retry_limit = 4 * 60;
+
+    var staging = true;
+
+    var $btn_reset = $("#reset");
+
+    var $team_select = $("#id_team");
+    var $div_team_dependant = $("#team_dependant");
+
+    $div_team_dependant.hide();
+    $team_select.change(function () {
+        if ($team_select.val()) {
+            $div_team_dependant.fadeIn();
+        } else {
+            $div_team_dependant.fadeOut();
+        }
+    });
 
     $("#btn_config").click(function () {
         $.ajax({
@@ -25,17 +53,21 @@ $(document).ready(function() {
        min: 0
     });
 
-    $sw_start.click(function () {
+    $btn_sw_start.click(function () {
+        staging = false;
         countdown_running = true;
         update_countdown();
-        $sw_start.toggleClass("disabled");
-        $sw_stop.toggleClass("disabled");
+        $btn_sw_start.toggleClass("disabled");
+        $btn_sw_stop.toggleClass("disabled");
+
+        $btn_wc_start.click();
+        $wc_time.addClass('text-success');
     });
 
-    $sw_stop.click(function () {
+    $btn_sw_stop.click(function () {
         countdown_running = false;
-        $sw_start.toggleClass("disabled");
-        $sw_stop.toggleClass("disabled");
+        $btn_sw_start.toggleClass("disabled");
+        $btn_sw_stop.toggleClass("disabled");
 
         if ($used_time_field !== null) {
             var elapsed = 149 - countdown;
@@ -63,12 +95,69 @@ $(document).ready(function() {
                 }
                 countdown--;
                 setTimeout(update_countdown, 1000);
+
             } else {
                 countdown_running = false;
                 $sw_time.removeClass('text-warning');
                 $sw_time.addClass('text-danger');
-                $sw_stop.toggleClass("disabled");
+                $btn_sw_stop.toggleClass("disabled");
             }
         }
     }
+
+    $btn_wc_start.click(function () {
+        update_wall_clock();
+        $btn_wc_start.toggleClass("disabled");
+    });
+
+    function update_wall_clock() {
+        var mins = Math.floor(wc_countdown / 60);
+        var secs = Math.floor(wc_countdown % 60);
+        if (secs < 10) {
+            secs = "0" + secs;
+        }
+        $wc_time.text(mins + ":" + secs);
+
+        if (wc_countdown > 0) {
+            switch (wc_countdown) {
+                case wc_staging_warning:
+                    if (staging) {
+                        $wc_time.addClass('text-info');
+                    }
+                    break;
+                case wc_staging_limit:
+                    if (staging && !countdown_running) {
+                        $wc_time.removeClass('text-info');
+                        $wc_time.addClass('text-warning');
+                    }
+                    break;
+                case wc_retry_limit:
+                    $wc_time.removeClass('text-success');
+                    $wc_time.addClass('text-warning');
+
+                    $btn_reset.addClass('disabled');
+                    break;
+            }
+
+            wc_countdown--;
+            setTimeout(update_wall_clock, 1000);
+
+        } else {
+            $wc_time.removeClass('text-warning');
+            $wc_time.addClass('text-danger');
+        }
+    }
+
+    $btn_reset.click(function () {
+        countdown_running = false;
+        countdown = MATCH_DURATION;
+
+        $sw_time.text("2:30");
+        $sw_time.removeClass('text-warning');
+        $sw_time.removeClass('text-danger');
+
+        $btn_sw_start.removeClass("disabled");
+        $btn_sw_stop.addClass("disabled");
+ })
+
 });
