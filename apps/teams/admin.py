@@ -203,3 +203,4 @@ class TeamInlineModelAdmin(admin.TabularInline):
 @admin.register(TeamContact)
 class TeamContactAdmin(admin.ModelAdmin):
     inlines = [TeamInlineModelAdmin]
+    list_display = ['__str__', 'school']

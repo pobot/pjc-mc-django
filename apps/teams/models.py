@@ -244,7 +244,15 @@ class TeamContact(models.Model):
         max_length=20,
         blank=True,
     )
-    teacher_subject = models.CharField(
+    school = models.ForeignKey(
+        'School',
+        verbose_name='établissement scolaire',
+        blank=True,
+        null=True,
+        related_name='contacts',
+        on_delete=models.PROTECT
+    )
+    taught_subject = models.CharField(
         verbose_name='matière enseignée',
         max_length=20,
         blank=True
