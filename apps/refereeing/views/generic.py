@@ -53,7 +53,7 @@ class LoginForm(AuthenticationForm):
         self.fields['username'] = ChoiceField(
             choices=(
                 (user.username, user.username)
-                 for user in User.objects.filter(groups__name__icontains='arbitre').order_by('username')
+                for user in User.objects.filter(groups__name__icontains='arbitre').order_by('username')
             )
         )
 
