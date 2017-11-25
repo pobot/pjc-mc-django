@@ -72,6 +72,9 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     match_num = None
     # set this to True and implement get_random_config if this round uses random configurations
     random_configuration = False
+    # by default, the random configuration is supposed to be drawn once, before the match. Change to False if
+    # it can be drawn again during the match. In this case, the button will not be hidden after the first use.
+    config_only_once = True
     # set this to the field storing the time used by the robot to complete the round if relevant
     used_time_field = None
     # tells if multiple trials are allowed for the match
@@ -98,6 +101,7 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
         kwargs.update({
             'match_num': self.match_num,
             'random_config': self.random_configuration,
+            'config_only_once': 'config_only_once' if self.config_only_once else '',
             'used_time_field': self.used_time_field or '',
             'multi_trials_allowed': self.multi_trials_allowed,
         })
@@ -139,6 +143,6 @@ def get_random_configuration(request, match_num):
 
     view = rob_views[int(match_num) - 1]
     if view.random_configuration:
-        return HttpResponse('-'.join((str(c) for c in view.get_random_config())))
+        return HttpResponse(view.get_random_config())
     else:
         return HttpResponse(status=418)  # let's joke :)

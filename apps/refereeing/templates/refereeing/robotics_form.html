@@ -18,17 +18,17 @@
     <form class="form-horizontal" role="form" method="post" id="result_form">
         {% csrf_token %}
         {% bootstrap_field form.team layout='horizontal' horizontal_label_class="col-xs-2" horizontal_field_class="col-xs-10" %}
-        {% if random_config %}
-            <div class="well well-sm">
-                <div id="div_btn_config" >
-                    <a id="btn_config" href="#" class="btn btn-primary btn-block">Tirer configuration</a>
-                </div>
-                <div id="div_config" class="text-center hidden h4">
-                    Configuration : <span id="config"></span>
-                </div>
-            </div>
-        {% endif %}
         <div id="team_dependant">
+            {% if random_config %}
+                <div class="well well-sm">
+                    <div id="div_btn_config" >
+                        <a id="btn_config" href="#" class="btn btn-primary btn-block {{ config_only_once }}">Tirer configuration</a>
+                    </div>
+                    <div id="div_config" class="text-center hidden h4">
+                        <span id="config"></span>
+                    </div>
+                </div>
+            {% endif %}
             {% if not form.errors %}
                 <div class="container row">
                     <div id="wallclock" class="col col-xs-6 well well-sm">

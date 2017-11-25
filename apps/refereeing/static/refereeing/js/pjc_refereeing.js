@@ -23,6 +23,8 @@ $(document).ready(function() {
 
     var $team_select = $("#id_team");
     var $div_team_dependant = $("#team_dependant");
+    var $div_config = $("#div_config");
+    var $btn_config = $("#btn_config");
 
     $div_team_dependant.hide();
     $team_select.change(function () {
@@ -33,14 +35,24 @@ $(document).ready(function() {
         }
     });
 
-    $("#btn_config").click(function () {
+    $btn_config.click(function () {
         $.ajax({
             url: url_rnd_config,
             success: function(data) {
                 console.log("config=" + data);
-                $("#config").html(data);
-                $("#div_config").removeClass("hidden");
-                $("#btn_config").addClass("hidden");
+                if (! $div_config.hasClass("hidden")) {
+                    $div_config.fadeOut("fast", function () {
+                        $("#config").html(data);
+                    });
+                } else {
+                    $("#config").html(data);
+                    $div_config.removeClass("hidden")
+                }
+
+                $div_config.fadeIn("fast");
+                if ($btn_config.hasClass("config_only_once")) {
+                    $("#btn_config").addClass("hidden");
+                }
             }
         });
     });

@@ -25,6 +25,7 @@ class Robotics3CreateView(RoboticsBaseView):
 
     # change it to False if obstacle robot is used
     random_configuration = True
+    config_only_once = False
 
     @classmethod
     def get_random_config(cls):
