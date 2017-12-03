@@ -1,6 +1,6 @@
 appdirs==1.4.3
 arrow>=0.10
-Django>=1.11
+Django==1.11
 django-suit==0.2.25
 django-bootstrap3>=9
 reportlab==3.4.0
