@@ -47,17 +47,21 @@ class Category(Enum):
     RaspberryPi = 3
 
 
-class LastNameField(models.CharField):
-    description = "A CharField containing an upper cased full name"
+class UpperCasedField(models.CharField):
+    description = "A CharField containing an automatically upper cased value"
+
+    def get_prep_value(self, value):
+        value = super().get_prep_value(value)
+        return value.upper() if value else value
+
+
+class LastNameField(UpperCasedField):
+    description = "An UpperCasedField with sensible defaults for the last name of somebody"
 
     def __init__(self, *args, **kwargs):
         verbose_name = kwargs.pop('verbose_name', 'nom')
         max_length = kwargs.pop('max_length', 30)
         super().__init__(*args, verbose_name=verbose_name, max_length=max_length, **kwargs)
-
-    def get_prep_value(self, value):
-        value = super().get_prep_value(value)
-        return value.upper() if value else value
 
 
 class FirstNameField(models.CharField):
@@ -283,7 +287,7 @@ class School(models.Model):
         max_length=250,
         blank=True,
     )
-    city = models.CharField(
+    city = UpperCasedField(
         verbose_name="ville",
         max_length=50,
         blank=False,
