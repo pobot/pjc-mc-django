@@ -11,7 +11,7 @@ from research.models import EVALUATION_CHOICES
 
 __author__ = 'Eric Pascual'
 
-__all__ = ['TeamsListGenerator']
+__all__ = ['PostersEvalGridGenerator']
 
 
 class PostersEvalGridGenerator(ReportGenerator):

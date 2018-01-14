@@ -16,6 +16,8 @@ from docmaker.generators.match_forms import RoboticsMatchFormGenerator
 from docmaker.generators.certificates import CertificateGenerator
 from docmaker.generators.poster_evaluation import PostersEvalGridGenerator
 
+from docmaker.commons import GenerationError
+
 __author__ = 'Eric Pascual'
 
 SCRIPT_HOME = os.path.dirname(__file__)
@@ -98,5 +100,14 @@ class Command(BaseCommand):
             generator = generator_class(output_dir)
             self.stdout.write('- {0:30s}'.format(generator.title), ending='')
             self.stdout.flush()
-            generated_file = generator.generate()
-            self.stdout.write('--> %s' % os.path.basename(generated_file))
+
+            try:
+                generator.generate()
+
+            except GenerationError as e:
+                print('*** An error occurred during document generation :')
+                print(' ' * 36 + str(e))
+                generator.remove_report_file()
+
+            else:
+                self.stdout.write('--> %s' % os.path.basename(generator.pdf_file_path))

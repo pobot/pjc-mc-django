@@ -21,7 +21,8 @@ __all__ = [
     'DefaultPageHeader', 'DefaultTeamHeader',
     'cell_body', 'cell_header', 'match_title', 'match_comment', 'tables_spacer', 'section_title',
     'no_grid_table_style', 'default_table_style',
-    'cell_bkgnd_color'
+    'cell_bkgnd_color',
+    'GenerationError'
 ]
 
 # remember to update this if the resources folder is moved
@@ -109,23 +110,29 @@ class ReportGenerator(object):
 
     def __init__(self, output_dir):
         self._output_dir = output_dir
+        self.pdf_file_path = os.path.join(self._output_dir, self.output_file_name + '.pdf')
 
     def generate(self):
-        pdf_file_path = os.path.join(self._output_dir, self.output_file_name + '.pdf')
+        # build the complete document story as a list of generators
+        doc_story = self.story()
+
+        # compile the story and produces the corresponding PDF
         pdf_doc = PJCDocTemplate(
-            filename=pdf_file_path,
+            filename=self.pdf_file_path,
             pagesize=self.page_size,
             topMargin=0.5 * inch,
             bottomMargin=0.5 * inch,
             title="POBOT Junior Cup " + self.title,
             author="POBOT"
         )
-        doc_story = self.story()
         pdf_doc.build(list(doc_story))
-        return pdf_file_path
 
     def story(self):
         raise NotImplementedError()
+
+    def remove_report_file(self):
+        if os.path.exists(self.pdf_file_path):
+            os.remove(self.pdf_file_path)
 
 
 class DefaultPageHeader(object):
@@ -191,7 +198,7 @@ class DefaultTeamHeader(object):
         for _ in (
             Paragraph("%s - %s" % (self._team.num, self._team.name), self.team_name_style),
             Paragraph(
-                "%s - %s" % (self._team.school or '<i>équipe open</i>', self._team.grade.abbrev),
+                "%s - %s" % (self._team.school or '<i>équipe open</i>', self._team.grade_extent_display),
                 self.team_school_style
             ),
             Paragraph(
@@ -226,3 +233,7 @@ class TeamReportGenerator(ReportGenerator):
 
     def body_story(self, team):
         raise NotImplementedError()
+
+
+class GenerationError(Exception):
+    pass

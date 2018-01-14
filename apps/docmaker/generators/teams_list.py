@@ -27,7 +27,7 @@ class TeamsListGenerator(ReportGenerator):
         yield Table(
             [
                 (
-                    team.num, team.name, team.grade.abbrev, team.school.name,
+                    team.num, team.name, team.grade_extent_display, team.school.name,
                     "%s (%s)" % (team.school.city, team.school.zip_code[:2])
                 )
                 for team in Team.objects.all()
@@ -38,4 +38,5 @@ class TeamsListGenerator(ReportGenerator):
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 0.1 * inch),
                 ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ])
+            ]
+        )

@@ -23,13 +23,17 @@ class PlanningGenerator(ReportGenerator):
     page_size = landscape(A4)
 
     def story(self):
-        for _ in DefaultPageHeader(
-            title=self.title,
-            page_size=self.page_size
-        ).story():
-            yield _
+        try:
+            for _ in DefaultPageHeader(
+                title=self.title,
+                page_size=self.page_size
+            ).story():
+                yield _
 
-        yield PlanningFlowable()
+            yield PlanningFlowable()
+
+        except GenerationError as e:
+            self.add_error(str(e))
 
 
 class PlanningFlowable(Flowable):
@@ -54,7 +58,11 @@ class PlanningFlowable(Flowable):
         y = self.CHART_Y0 + 0.4 * inch
 
         today = datetime.datetime.today().date()
+
         spans = [_ for _ in zip(*[p.time_span for p in Planning.objects.all()])]
+        if not spans:
+            raise GenerationError('planning is not yet defined')
+
         start_time, end_time = [datetime.datetime.combine(today, t) for t in (min(spans[0]), max(spans[1]))]
         # round bounds to the nearest full hour
         start_time = start_time.replace(minute=0)
