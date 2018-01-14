@@ -161,6 +161,19 @@ class Team(models.Model):
             return None
 
     @property
+    def grade_extent_display(self):
+        extent = self.grade_extent
+        if extent:
+            min_grade, max_grade = extent['min_grade'], extent['max_grade']     # type: Grade
+            if min_grade == max_grade:
+                return min_grade.abbrev
+            else:
+                return f"{min_grade.abbrev} à {max_grade.abbrev}"
+        else:
+            return ""
+
+
+    @property
     def average_age(self):
         # TODO cache this by making it a read-only field, updated on members changes
         if self.members.exists():
