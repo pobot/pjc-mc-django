@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 from django.db.models import DateField
+from django.conf import settings
 
 from suit.widgets import SuitDateWidget
 
@@ -56,7 +57,7 @@ class TeamMemberInlineModelAdmin(admin.TabularInline):
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     readonly_fields = ['num', 'match1_summary', 'match2_summary', 'match3_summary', 'research_summary',
-                       'poster_summary', 'average_age', 'grade_extent']
+                       'poster_summary', 'average_age', 'grade_extent', 'complete']
     fieldsets = (
         (None, {
             'classes': ('suit-tab', 'suit-tab-general'),
@@ -75,7 +76,7 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
             'fields': ('poster_summary',)
         }),
     )
-    list_display = ['verbose_team_name', 'unsortable_school', '_category', '_present']
+    list_display = ['verbose_team_name', 'unsortable_school', '_category', '_present', '_complete']
     list_filter = ['category_code', 'school', 'school__city', 'present']
     ordering = None
     actions = [check_in]
@@ -169,6 +170,12 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     def suit_row_attributes(self, obj, request):
         return {'class': self.category_css_class[obj.category]}
 
+    def _complete(self, obj: Team):
+        return obj.complete
+
+    _complete.short_description = 'Complète'
+    _complete.boolean = True
+
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -200,7 +207,19 @@ class TeamInlineModelAdmin(admin.TabularInline):
         return False
 
 
+def teamcontact_send_email_action(modeladmin, request, queryset):
+    mail_to = ','.join((c.email for c in queryset))
+    subject = '[PJC%s] ' % settings.PJC['edition']
+
+    import webbrowser
+    webbrowser.open('mailto:?to=%s&subject=%s' % (mail_to, subject.replace(' ', '%20')))
+
+
+teamcontact_send_email_action.short_description = "Envoyer un email"
+
+
 @admin.register(TeamContact)
 class TeamContactAdmin(admin.ModelAdmin):
     inlines = [TeamInlineModelAdmin]
-    list_display = ['__str__', 'school']
+    list_display = ['__str__', 'school', 'email']
+    actions = [teamcontact_send_email_action]

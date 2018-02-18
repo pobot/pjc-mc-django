@@ -172,7 +172,6 @@ class Team(models.Model):
         else:
             return ""
 
-
     @property
     def average_age(self):
         # TODO cache this by making it a read-only field, updated on members changes
@@ -180,6 +179,10 @@ class Team(models.Model):
             return mean(m.age for m in self.members.all())
         else:
             return 0
+
+    @property
+    def complete(self):
+        return self.members.count() > 0
 
 
 class TeamMember(models.Model):
