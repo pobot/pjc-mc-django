@@ -15,6 +15,7 @@ from docmaker.generators.signs import SignsGenerator
 from docmaker.generators.match_forms import RoboticsMatchFormGenerator
 from docmaker.generators.certificates import CertificateGenerator
 from docmaker.generators.poster_evaluation import PostersEvalGridGenerator
+from docmaker.generators.team_registration_form import TeamRegistrationFormGenerator
 
 from docmaker.commons import GenerationError
 
@@ -32,6 +33,7 @@ _generators = {
     'r': RoboticsMatchFormGenerator,
     'c': CertificateGenerator,
     'g': PostersEvalGridGenerator,
+    'f': TeamRegistrationFormGenerator,
 }
 
 
