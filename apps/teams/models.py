@@ -166,9 +166,9 @@ class Team(models.Model):
         if extent:
             min_grade, max_grade = extent['min_grade'], extent['max_grade']     # type: Grade
             if min_grade == max_grade:
-                return min_grade.abbrev
+                return min_grade.label
             else:
-                return f"{min_grade.abbrev} à {max_grade.abbrev}"
+                return f"{min_grade.label} à {max_grade.label}"
         else:
             return ""
 
