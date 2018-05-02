@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.views.generic import RedirectView
 
 admin.site.site_header = "POBOT Junior Cup"
 admin.site.index_title = "POBOT Junior Cup - Administration"
 
 urlpatterns = [
+    url(r'^favicon.ico$', RedirectView.as_view(url=static('/img/favicon.png'))),
     url(r'^admin/', admin.site.urls),
     url(r'^display/', include('display.urls')),
     url(r'^refereeing/', include('refereeing.urls', namespace='refereeing')),
