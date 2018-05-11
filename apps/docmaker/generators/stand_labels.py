@@ -44,8 +44,14 @@ class CustomTeamHeader(DefaultTeamHeader):
             Paragraph(self._team.name, self.team_name_style),
             Spacer(0, .5 * inch),
             Paragraph(self._team.school.name if self._team.school else '<i>équipe open</i>', self.team_detail_style),
-            Paragraph(self._team.grade_extent_display, self.team_detail_style),
-            Paragraph("%s (%s)" % (self._team.school.city, self._team.school.zip_code[:2]), self.team_detail_style),
+            Paragraph(self._team.grade_extent_display, self.team_detail_style)
+        ):
+            yield _
+
+        if self._team.school:
+            yield Paragraph("%s (%s)" % (self._team.school.city, self._team.school.zip_code[:2]), self.team_detail_style)
+
+        for _ in (
             Spacer(0, 0.5 * inch),
             Paragraph(
                 "Catégorie : %s" % self._team.category.name, self.team_category_style

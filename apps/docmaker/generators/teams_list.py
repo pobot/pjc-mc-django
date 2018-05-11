@@ -27,8 +27,9 @@ class TeamsListGenerator(ReportGenerator):
         yield Table(
             [
                 (
-                    team.num, team.name, team.grade_extent_display, team.school.name,
-                    "%s (%s)" % (team.school.city, team.school.zip_code[:2])
+                    team.num, team.name, team.grade_extent_display,
+                    team.school.name if team.school else '(équipe open)',
+                    ("%s (%s)" % (team.school.city, team.school.zip_code[:2])) if team.school else ""
                 )
                 for team in Team.objects.all()
             ], style=[
