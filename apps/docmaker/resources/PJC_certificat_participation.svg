@@ -13,7 +13,7 @@
    sodipodi:docname="PJC_certificat_participation.svg"
    inkscape:export-ydpi="300.00000"
    inkscape:export-xdpi="300.00000"
-   inkscape:export-filename="/host/POBOT/EVENEMENTS/DOCUMENTS/PJC 2013/Prix/PJC_astuce_technique.png"
+   inkscape:export-filename=""
    inkscape:version="0.91 r"
    sodipodi:version="0.32"
    id="svg2"
@@ -21,23 +21,10 @@
    width="595.27559pt"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1">
+  <title
+     id="title4156">PJC participation certificate</title>
   <defs
-     id="defs3">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 262.20471 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 262.20471 : 1"
-       inkscape:persp3d-origin="372.04724 : 174.80314 : 1"
-       id="perspective20" />
-    <inkscape:perspective
-       id="perspective2482"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
+     id="defs3" />
   <sodipodi:namedview
      inkscape:window-y="0"
      inkscape:window-x="0"
@@ -45,9 +32,9 @@
      inkscape:window-width="1920"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="266.30465"
-     inkscape:cx="100.34246"
-     inkscape:zoom="1.0166837"
+     inkscape:cy="206.87854"
+     inkscape:cx="310.44831"
+     inkscape:zoom="1.4378079"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1.0000000"
      borderopacity="1.0"
@@ -66,7 +53,17 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title>PJC participation certificate</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>E. PASCUAL</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>POBOT</dc:title>
+          </cc:Agent>
+        </dc:publisher>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -85,15 +82,15 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:16px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="249.05908"
+       x="215.02716"
        y="76.875961"
        id="text4200"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4202"
-         x="249.05908"
+         x="215.02716"
          y="76.875961"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:-3.72999859px;fill:#800000">POBOT Junior Cup</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35px;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:-3.72999859px;fill:#800000">POBOT Junior Cup $(edition)s</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:16px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -108,7 +105,7 @@
     <text
        inkscape:export-ydpi="300.00000"
        inkscape:export-xdpi="300.00000"
-       inkscape:export-filename="C:\DOCUME~1\Julien.PC\Bureau\PRIX\FLL_prixtechnique.png"
+       inkscape:export-filename=""
        sodipodi:linespacing="100%"
        id="text2877"
        y="256.88315"
@@ -131,10 +128,10 @@
          id="tspan2399-2"
          x="290.62378"
          y="420.29895"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:100%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:start;writing-mode:lr-tb;text-anchor:start">à Valbonne, Alpes Maritimes, le %(date)s </tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:100%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:start;writing-mode:lr-tb;text-anchor:start">à Valbonne, Alpes Maritimes, le $(date)s </tspan></text>
     <image
        sodipodi:absref="/home/eric/Documents/Pobot/events/PJC/diplomes/pobot-logo.svg"
-       xlink:href="pobot-logo.svg"
+       xlink:href="file:///home/eric/Documents/Pobot/events/PJC/diplomes/pobot-logo.svg"
        y="321.4202"
        x="33.6063"
        id="image2484"
@@ -157,7 +154,7 @@
          id="flowPara4175" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4177"
-       style="font-style:normal;font-weight:normal;font-size:16px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;text-anchor:middle;text-align:center;"><flowRegion
+       style="font-style:normal;font-weight:normal;font-size:16px;line-height:125%;font-family:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"><flowRegion
          id="flowRegion4179"><rect
            id="rect4181"
            width="606.87512"
@@ -166,8 +163,8 @@
            y="272.61038"
            style="text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowParaTeamName"
-         style="-inkscape-font-specification:'Sans, Bold';font-family:Sans;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:25px;text-anchor:middle;text-align:center;writing-mode:lr;line-height:140%"
-         inkscape:label="#flowPara4183">%(team_name)s</flowPara></flowRoot>  </g>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25px;line-height:139.99999762%;font-family:Sans;-inkscape-font-specification:'Sans, Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle"
+         inkscape:label="#flowPara4183">$(team_name)s</flowPara></flowRoot>  </g>
   <g
      inkscape:label="Texte"
      id="layer2"
