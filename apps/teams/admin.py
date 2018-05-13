@@ -144,7 +144,19 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
     _present.boolean = True
 
     def average_age(self, obj: Team):
-        return round(obj.average_age, 1)
+        age = obj.average_age
+        if age:
+            years = int(age)
+            months = round((age - years) * 12)
+            if months == 12:
+                years += 1
+                months = 0
+            if months:
+                return "%d ans %d mois" % (years, months)
+            else:
+                return "%d ans" % years
+        else:
+            return '-'
 
     average_age.short_description = 'Age moyen'
 
