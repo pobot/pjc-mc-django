@@ -24,7 +24,7 @@ class DisplayAdmin(admin.ModelAdmin):
         return False
 
     def has_add_permission(self, request):
-        return False
+        return not DisplaySettings.objects.exists()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
