@@ -5,13 +5,14 @@ $(document).ready(function() {
     var $sw_time = $("#sw_time");
 
     var MATCH_DURATION = 150;   // 2mn30
-    var countdown = MATCH_DURATION;
-    var countdown_running = false;
+    var match_countdown = MATCH_DURATION;
+    var match_countdown_running = false;
 
     // wall clock
     var $btn_wc_start = $("#wc_start");
     var $wc_time = $("#wc_time");
 
+    var wc_countdown_running = false;
     var wc_countdown = 10 * 60;     // 10mn
     var wc_staging_limit = 7 * 60;
     var wc_staging_warning = 7 * 60 + 30;
@@ -25,6 +26,12 @@ $(document).ready(function() {
     var $div_team_dependant = $("#team_dependant");
     var $div_config = $("#div_config");
     var $btn_config = $("#btn_config");
+
+    function reset_input_fields() {
+        for (fld in reset_values) {
+            $("#id_" + fld).val(reset_values[fld]);
+        }
+    }
 
     $div_team_dependant.hide();
     $team_select.change(function () {
@@ -67,22 +74,24 @@ $(document).ready(function() {
 
     $btn_sw_start.click(function () {
         staging = false;
-        countdown_running = true;
-        update_countdown();
+        match_countdown_running = true;
+        update_match_countdown();
         $btn_sw_start.toggleClass("disabled");
         $btn_sw_stop.toggleClass("disabled");
 
-        $btn_wc_start.click();
-        $wc_time.addClass('text-success');
+        // starts wall clock if not yet done
+        if (!wc_countdown_running) {
+            $btn_wc_start.click();
+        }
     });
 
     $btn_sw_stop.click(function () {
-        countdown_running = false;
+        match_countdown_running = false;
         $btn_sw_start.toggleClass("disabled");
         $btn_sw_stop.toggleClass("disabled");
 
         if ($used_time_field !== null) {
-            var elapsed = 149 - countdown;
+            var elapsed = 149 - match_countdown;
             var mins = Math.floor(elapsed / 60);
             var secs = Math.floor(elapsed % 60);
             if (secs < 10) {
@@ -92,24 +101,24 @@ $(document).ready(function() {
         }
     });
 
-    function update_countdown() {
-        if (countdown_running) {
-            var mins = Math.floor(countdown / 60);
-            var secs = Math.floor(countdown % 60);
+    function update_match_countdown() {
+        if (match_countdown_running) {
+            var mins = Math.floor(match_countdown / 60);
+            var secs = Math.floor(match_countdown % 60);
             if (secs < 10) {
                 secs = "0" + secs;
             }
             $sw_time.text(mins + ":" + secs);
 
-            if (countdown > 0) {
-                if (countdown === 15) {
+            if (match_countdown > 0) {
+                if (match_countdown === 15) {
                     $sw_time.addClass('text-warning');
                 }
-                countdown--;
-                setTimeout(update_countdown, 1000);
+                match_countdown--;
+                setTimeout(update_match_countdown, 1000);
 
             } else {
-                countdown_running = false;
+                match_countdown_running = false;
                 $sw_time.removeClass('text-warning');
                 $sw_time.addClass('text-danger');
                 $btn_sw_stop.toggleClass("disabled");
@@ -120,6 +129,7 @@ $(document).ready(function() {
     $btn_wc_start.click(function () {
         update_wall_clock();
         $btn_wc_start.toggleClass("disabled");
+        wc_countdown_running = true;
     });
 
     function update_wall_clock() {
@@ -129,6 +139,11 @@ $(document).ready(function() {
             secs = "0" + secs;
         }
         $wc_time.text(mins + ":" + secs);
+        // update wall clock display attributes to reflect that
+        // a match has been started
+        if (match_countdown_running) {
+            $wc_time.addClass('text-success');
+        }
 
         if (wc_countdown > 0) {
             switch (wc_countdown) {
@@ -138,7 +153,7 @@ $(document).ready(function() {
                     }
                     break;
                 case wc_staging_limit:
-                    if (staging && !countdown_running) {
+                    if (staging && !match_countdown_running) {
                         $wc_time.removeClass('text-info');
                         $wc_time.addClass('text-warning');
                     }
@@ -161,8 +176,8 @@ $(document).ready(function() {
     }
 
     $btn_reset.click(function () {
-        countdown_running = false;
-        countdown = MATCH_DURATION;
+        match_countdown_running = false;
+        match_countdown = MATCH_DURATION;
 
         $sw_time.text("2:30");
         $sw_time.removeClass('text-warning');
@@ -170,6 +185,9 @@ $(document).ready(function() {
 
         $btn_sw_start.removeClass("disabled");
         $btn_sw_stop.addClass("disabled");
+
+        reset_input_fields();
+
  })
 
 });

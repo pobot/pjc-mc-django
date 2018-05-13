@@ -10,6 +10,7 @@
     <script>
         var $used_time_field = {% if used_time_field %} $("#id_{{ used_time_field }}") {% else %} null {% endif %};
         var url_rnd_config = '{% url "refereeing:rnd_config" match_num=match_num %}';
+        var reset_values = {{ reset_values | safe }};
     </script>
     <script src="{% static 'refereeing/js/pjc_refereeing.js' %}"></script>
 {% endblock %}
@@ -34,7 +35,7 @@
                     <div id="wallclock" class="col col-xs-6 well well-sm">
                         <div class="text-center"><span id="wc_time" class="h1">10:00</span></div>
                         <div class="btn-group btn-group-justified" role="group">
-                            <a id="wc_start" href="#" class="btn btn-success">Equipe arrivée</a>
+                            <a id="wc_start" href="#" class="btn btn-success">Début passage</a>
                         </div>
                     </div>
                     <div id="stopwatch" class="col col-xs-6 well well-sm">

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import json
 
 from django.conf import settings
 from django.contrib import messages
@@ -79,6 +80,8 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     used_time_field = None
     # tells if multiple trials are allowed for the match
     multi_trials_allowed = False
+    # field reset values
+    reset_values = {}
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -104,6 +107,7 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
             'config_only_once': 'config_only_once' if self.config_only_once else '',
             'used_time_field': self.used_time_field or '',
             'multi_trials_allowed': self.multi_trials_allowed,
+            'reset_values': self.reset_values,
         })
         return super().get_context_data(**kwargs)
 
