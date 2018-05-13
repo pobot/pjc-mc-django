@@ -3,6 +3,7 @@ arrow>=0.10
 Django==1.11
 django-suit==0.2.25
 django-bootstrap3>=9
+gunicorn
 reportlab==3.4.0
 whitenoise==3.3.0
 pyperclip==1.6.0
