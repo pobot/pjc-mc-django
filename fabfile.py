@@ -19,7 +19,7 @@ def deploy():
             'fabfile.py',
             '*.pyc',
             '__pycache__',
-            'db.sqlite3',
+            '*.sqlite3',
             'data',
             'requirements-dev.txt',
             'staticfiles',
