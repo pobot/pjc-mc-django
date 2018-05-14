@@ -31,47 +31,23 @@ class RoboticsMatchFormGenerator(TeamReportGenerator):
 
     def _match1_items(self):
         yield Paragraph(
-            "Nombre de trajets aller ou retour",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre de variantes (max. 2)",
+            "Nombre de quadrants intégralement parcourus",
             style=cell_body
         )
 
     def _match2_items(self):
         yield Paragraph(
-            "Temps restant (mm:ss)",
+            "Nombre de quadrants intégralement parcourus",
             style=cell_body
         )
         yield Paragraph(
-            "Nombre de trajets aller",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre de trajets retour",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre d'objets ramenés",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre d'objets dans la zone",
+            "Nombre d'obstacles déplacés (i.e. en partie hors limite)",
             style=cell_body
         )
 
     def _match3_items(self):
         yield Paragraph(
-            "Nombre de trajets aller ou retour",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre de variantes (max. 2)",
-            style=cell_body
-        )
-        yield Paragraph(
-            "Nombre d'obstacles déplacés (i.e. en partie hors limite)",
+            "Nombre de quadrants intégralement parcourus",
             style=cell_body
         )
 
