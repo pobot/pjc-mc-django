@@ -136,7 +136,7 @@ class RankingDisplayAdmin(admin.ModelAdmin):
     team_cat.short_description = 'catégorie'
 
     def team_grade(self, obj):
-        return obj.team.grade.abbrev
+        return obj.team.grade_extent_display
 
     team_grade.short_description = 'classe'
 
