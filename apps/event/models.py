@@ -290,8 +290,8 @@ class Ranking(models.Model):
 
     @classmethod
     def compute_typed_ranking(cls, teams, ranking_type, verbose=False):
-        # TODO add 1st position ex-aequo removal for research and poster
-
+        # results:
+        #   team : [pts(rob1), pts(rob2), pts(rob3), pts(research), pts(poster)]
         results = OrderedDict((
             (t, [points_or_forfait(t, item) for item in COMPETITION_ITEM_NAMES]) for t in teams
         ))
@@ -299,16 +299,53 @@ class Ranking(models.Model):
             _print_raw_results(results, ranking_type)
 
         # compute the ranking points as a matrix arranged by topic first
+        # rp_raw:
+        #   rob1     -> [rp(t1), rp(t2),... ]
+        #   rob2     -> [rp(t1), rp(t2),... ]
+        #   rob3     -> [rp(t1), rp(t2),... ]
+        #   research -> [rp(t1), rp(t2),... ]
+        #   poster   -> [rp(t1), rp(t2),... ]
         rp_raw = [to_rank_points(pts) for pts in transposed(results.values())]
         if verbose:
             _print_raw_rank_points_results(rp_raw, ranking_type)
 
         # merge robotics ranking points by summing the first 3 rows
-        intermediate_raw_rp = list(transposed(((sum(l[0:3]), l[3], l[4]) for l in transposed(rp_raw))))
+        # intermediate_raw_rp:
+        #   rob      -> [rp(t1), rp(t2),... ]
+        #   research -> [rp(t1), rp(t2),... ]
+        #   poster   -> [rp(t1), rp(t2),... ]
+        intermediate_raw_rp = list(transposed([[sum(l[0:3]), l[3], l[4]] for l in transposed(rp_raw)]))
         if verbose:
             _print_merged_rank_points_results(intermediate_raw_rp, ranking_type)
 
-        # compute the rankings per rows and save it for later
+        # separate ex-aequos for research and poster
+
+        ages = [t.average_age for t in teams]
+
+        def _separate_first_rank_ex_aequos(row):
+            rp = list(intermediate_raw_rp[row])
+            # get the highest rank point, which is associated to the first team
+            rp_first = max(rp)
+            # find all ex-aequos
+            ex_aequos = [i for i in range(len(rp)) if rp[i] == rp_first]
+            if len(ex_aequos) > 1:
+                # if some, get the lowest team age
+                min_age = min([ages[i] for i in ex_aequos])
+                # select the youngest team
+                youngest_team = [i for i in ex_aequos if ages[i] == min_age][0]
+                # push the others one rank backwards by reducing their rank points
+                for team in ex_aequos:
+                    if team != youngest_team:
+                        rp[team] = rp[team] - 1
+
+                intermediate_raw_rp[row] = rp
+
+        for i in (1, 2):    # research, poster
+            _separate_first_rank_ex_aequos(i)
+
+        # compute the rankings per team and save it for later
+        # ranking_data:
+        #   team : [0, rank(rob), rank(research), rank(poster)]
         ranking_data = {
             t: [0] + list(r)  # pre-allocate the first slot for the general rank which will be computed later
             for t, r in zip(results.keys(), transposed(to_ranks(rp) for rp in intermediate_raw_rp))
@@ -325,7 +362,9 @@ class Ranking(models.Model):
         # if verbose:
         #     print('global_ranking =', global_ranking)
 
-        # differentiate 1st position ex-aequo by using the team age bonus
+        # differentiate 1st position ex-aequo by using the team average age
+
+        # 1. create the map (rank -> list of teams at this rank)
         by_rank = {
             g_r: [t for t, t_r in zip(results.keys(), global_ranking) if t_r == g_r]
             for g_r in global_ranking
@@ -333,19 +372,25 @@ class Ranking(models.Model):
         if verbose:
             _print_by_rank(by_rank, ranking_type)
 
+        # 2. get the teams at first rank
         teams = by_rank[1]
         if len(teams) > 1:
-            teams.sort(key=lambda t: t.grade.bonus, reverse=True)
+            # if more than one, sort them by the average age, first one being the youngest
+            teams.sort(key=lambda t: t.average_age)
+            # keep the first one at first rank
             by_rank[1] = teams[:1]
+            # and push the others at rank 2
             by_rank[2] = teams[1:]
 
             if verbose:
                 _print_by_rank(by_rank, ranking_type, ex_aequo_removed=True)
 
+        # finally, update the global rank of each team with the one we just computed
         for r, teams in by_rank.items():
             for t in teams:
                 ranking_data[t][0] = r
 
+        # and save the result in the db
         ranks = [
             Ranking(type_code=ranking_type, team=t,
                     general=r[0], robotics=r[1], research=r[2], poster=r[3]
@@ -354,7 +399,6 @@ class Ranking(models.Model):
         ]
         # _print_rankings(ranks, ranking_type, final=True)
 
-        # save the result in the db
         cls.objects.bulk_create(ranks)
 
     @classmethod
@@ -370,13 +414,14 @@ class Ranking(models.Model):
                 teams = Team.objects.filter(present=True)
             if teams:
                 if verbose:
-                    print("[%s] --- ranking computation started" % ranking_type.name)
+                    print("[%-15s] --- ranking computation started" % ranking_type.name)
                 cls.compute_typed_ranking(teams, ranking_type.value, verbose)
                 if verbose:
-                    print("[%s] --- ranking computation complete" % ranking_type.name)
+                    print("[%-15s] --- ranking computation complete" % ranking_type.name)
             else:
                 if verbose:
-                    print("[%s] !!! no team for this category" % ranking_type.name)
+                    print("[%-15s] !!! no team for this category" % ranking_type.name)
+
 
 def points_or_forfait(team, item_name):
     try:
