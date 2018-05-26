@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^display/', include('display.urls')),
     url(r'^refereeing/', include('refereeing.urls', namespace='refereeing')),
+    url(r'^event/', include('event.urls', namespace='event')),
 ]

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import json
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,23 +14,12 @@ from django.views.generic.base import TemplateView, ContextMixin
 
 import match.models
 from teams.models import Team
-from pjc_mc import version
+from event.views.commons import AppMixin
 
 __author__ = 'Eric Pascual'
 
 logger = logging.getLogger('pjc.' + __name__)
 logger.setLevel(logging.INFO)
-
-
-class AppMixin(ContextMixin):
-    """ This mixin injects application wide data, such the title and the version """
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'brand': settings.PJC['title_long'],
-            'version': version,
-        })
-        return context
 
 
 class MatchMixin(ContextMixin):

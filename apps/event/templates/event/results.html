@@ -1,0 +1,21 @@
+{% extends 'event/base.html' %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block bootstrap3_extra_head %}
+    {{  block.super }}
+    <style>
+        p.winners {
+            color: darkgoldenrod;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+    {% for item in ranking %}
+        <p class="{% if item.rank == 1 %}winners{% endif %}">{{ item.rank }} - {{ item.team }}</p>
+    {% empty %}
+        <div class="alert alert-warning">Aucune équipe inscrite dans cette catégorie</div>
+    {% endfor %}
+{% endblock %}

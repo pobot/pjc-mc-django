@@ -2,7 +2,6 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% load pjcmc_extras %}
-{% load refereeing_tags %}
 
 {% block bootstrap3_title %}{{ brand }}{% endblock %}
 
@@ -23,16 +22,22 @@
                     <span class="icon-bar"></span>
                   </button>
                 {% endif %}
-              <a class="navbar-brand" href="{% url 'refereeing:home' %}">{{ brand }}</a>
+              <a class="navbar-brand" href="{% url 'event:home' %}">{{ brand }}</a>
             </div>
 
             {% if user.is_authenticated %}
                 <ul class="dropdown-menu" id="bs-match">
-                    <li {{ 1|round_menu_class }}><a href="{% url 'refereeing:rob1' %}">Epreuve 1</a></li>
-                    <li {{ 2|round_menu_class }}><a href="{% url 'refereeing:rob2' %}">Epreuve 2</a></li>
-                    <li {{ 3|round_menu_class }}><a href="{% url 'refereeing:rob3' %}">Epreuve 3</a></li>
+                    <li><a href="{% url 'event:results_lego' %}">Classement général Mindstorms</a></li>
+                    <li><a href="{% url 'event:results_arduino' %}">Classement général Arduino</a></li>
+                    <li><a href="{% url 'event:results_rpi' %}">Classement général Raspberry</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="{% url 'refereeing:logout' %}">Déconnexion</a></li>
+                    <li><a href="{% url 'event:best_lego' %}">Meilleur robot Mindstorms</a></li>
+                    <li><a href="{% url 'event:best_arduino' %}">Meilleur robot Arduino</a></li>
+                    <li><a href="{% url 'event:best_rpi' %}">Meilleur robot Raspberry</a></li>
+                    <li><a href="{% url 'event:best_research' %}">Meilleur exposé</a></li>
+                    <li><a href="{% url 'event:best_poster' %}">Meilleur poster</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'event:logout' %}">Déconnexion</a></li>
                 </ul>
             {% endif %}
         </div>

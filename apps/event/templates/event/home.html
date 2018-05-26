@@ -1,0 +1,32 @@
+{% extends 'event/base.html' %}
+{% load bootstrap3 %}
+
+{% block bootstrap3_extra_head %}
+    {{  block.super }}
+    <style>
+        body {
+            margin-top: 70px;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+    <div class="container-fluid">
+        {% bootstrap_messages %}
+        <h2>Classement général</h2>
+        <div class="btn-group btn-group-vertical btn-block " role="group">
+            <a class="btn btn-default" href="{% url 'event:results_lego' %}">Catégorie Mindstorms</a>
+            <a class="btn btn-default" href="{% url 'event:results_arduino' %}">Catégorie Arduino</a>
+            <a class="btn btn-default" href="{% url 'event:results_rpi' %}">Catégorie Raspberry</a>
+        </div>
+        <h2>Meilleurs...</h2>
+        <div class="btn-group btn-group-vertical btn-block" role="group">
+            <a class="btn btn-default" href="{% url 'event:best_lego' %}">Robot Mindstorms</a>
+            <a class="btn btn-default" href="{% url 'event:best_arduino' %}">Robot Arduino</a>
+            <a class="btn btn-default" href="{% url 'event:best_rpi' %}">Robot Raspberry</a>
+            <a class="btn btn-default" href="{% url 'event:best_research' %}">Exposé</a>
+            <a class="btn btn-default" href="{% url 'event:best_poster' %}">Poster</a>
+        </div>
+    </div>
+    <div class="row footer text-muted small">Version {{ version }}</div>
+{% endblock %}

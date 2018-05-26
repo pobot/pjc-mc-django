@@ -5,7 +5,7 @@
 {% block bootstrap3_extra_script %}
     {{ block.super }}
 
-    <script src="{% static 'refereeing/js/jquery.bootstrap-touchspin.min.js' %}"></script>
+    <script src="{% static 'js/jquery.bootstrap-touchspin.min.js' %}"></script>
 
     <script>
         var $used_time_field = {% if used_time_field %} $("#id_{{ used_time_field }}") {% else %} null {% endif %};
