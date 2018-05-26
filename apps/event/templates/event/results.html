@@ -16,6 +16,6 @@
     {% for item in ranking %}
         <p class="{% if item.rank == 1 %}winners{% endif %}">{{ item.rank }} - {{ item.team }}</p>
     {% empty %}
-        <div class="alert alert-warning">Aucune équipe inscrite dans cette catégorie</div>
+        <div class="alert alert-warning">Aucun résultat dans cette catégorie</div>
     {% endfor %}
 {% endblock %}
