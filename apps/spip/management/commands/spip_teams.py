@@ -1,32 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from textwrap import dedent
-import argparse
 import os
 
-from django.core.management import BaseCommand
-
 from teams.models import Team
+
+from .lib import SPIPCommand
 
 __author__ = 'Eric Pascual'
 
 SCRIPT_HOME = os.path.dirname(__file__)
 
 
-class Command(BaseCommand):
-    def add_arguments(self, parser):
-        parser.description = dedent("""
-            POBOT Web site teams table generator.
-            
-            Generates the SPIP code for the teams table and copy it in the clipboard
-        """)
+class Command(SPIPCommand):
+    description = """
+        POBOT Web site teams table generator.
+        
+        Generates the SPIP code for the teams table and copies it in the clipboard.
+    """
 
-        parser.formatter_class=argparse.RawTextHelpFormatter
-
-    def handle(self, *args, **options):
-        import pyperclip
-
-        lines = [
+    def get_spip_code(self):
+        return [
             '| %(num)d | %(name)s | %(categ)s | %(grade)s | %(school)s | %(city)s | %(dept)0.2s |' % {
                 'num': team.num,
                 'name': team.name if team.members.count() else '{%s}' % team.name,
@@ -38,6 +31,3 @@ class Command(BaseCommand):
             }
             for team in Team.objects.all().order_by('num')
         ]
-        pyperclip.copy('\n'.join(lines))
-
-        self.stdout.write("Table code copied in the clipboard.")

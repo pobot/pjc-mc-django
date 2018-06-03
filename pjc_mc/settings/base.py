@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'event.config.EventAppConfig',
     'display.config.DisplayAppConfig',
     'refereeing.config.RefereeingAppConfig',
-    'docmaker.config.DocMakerAppConfig'
+    'docmaker.config.DocMakerAppConfig',
+    'spip.config.SpipAppConfig'
 ]
 
 MIDDLEWARE = [
