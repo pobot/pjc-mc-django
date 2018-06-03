@@ -168,3 +168,4 @@ tags
 /static/docs/rules.pdf
 !/docs/
 .idea
+*.tgz
