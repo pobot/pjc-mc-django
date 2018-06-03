@@ -14,7 +14,7 @@ remote_dir = 'pjc-mc/'
 
 
 @task
-def deploy():
+def deploy(dry=False):
     rsync_project(
         remote_dir=remote_dir,
         local_dir='./',
@@ -32,6 +32,7 @@ def deploy():
             'pytest.ini',
         ],
         default_opts='-arh'
+        extra_opts='--dry-run' if dry else ''
     )
 
 
