@@ -4,9 +4,9 @@ __all__ = ['PJC']
 
 PJC = {
     'brand': 'POBOT Junior Cup',
-    'edition': '2018',
-    'thema': 'Automatic vehicles',
-    'event_date': "02/06/2018",
+    'edition': '2019',
+    'thema': 'Dependency Assistance',
+    'event_date': "25/05/2019",
     'start_time': "12:30",
     'end_time': "17:30",
     'planning_slot_minutes': 10,

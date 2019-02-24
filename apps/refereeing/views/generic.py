@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import json
 
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -94,7 +95,7 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
             'config_only_once': 'config_only_once' if self.config_only_once else '',
             'used_time_field': self.used_time_field or '',
             'multi_trials_allowed': self.multi_trials_allowed,
-            'reset_values': self.reset_values,
+            'reset_values': json.dumps(self.reset_values),
         })
         return super().get_context_data(**kwargs)
 

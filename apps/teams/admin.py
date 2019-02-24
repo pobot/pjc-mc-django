@@ -230,8 +230,38 @@ def teamcontact_send_email_action(modeladmin, request, queryset):
 teamcontact_send_email_action.short_description = "Envoyer un email"
 
 
+class HasTeamsFilter(admin.SimpleListFilter):
+    # UI title label
+    title = "avec équipes ?"
+    # query string parameter name
+    parameter_name = "has_teams"
+
+    def lookups(self, request, model_admin):
+        return (
+            # (<qparm_value>, <UI_label>)
+            ('1', "Oui"),
+            ('0', "Non"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            return queryset.exclude(teams__isnull=True)
+
+        if self.value() == '0':
+            return queryset.filter(teams__isnull=True)
+
+        return queryset
+
+
 @admin.register(TeamContact)
 class TeamContactAdmin(admin.ModelAdmin):
     inlines = [TeamInlineModelAdmin]
-    list_display = ['__str__', 'school', 'email']
+    list_display = ['__str__', 'school', 'email', '_has_teams']
     actions = [teamcontact_send_email_action]
+    list_filter = [HasTeamsFilter]
+
+    def _has_teams(self, obj: TeamContact):
+        return obj.teams.exists()
+
+    _has_teams.short_description = 'Equipes ?'
+    _has_teams.boolean = True

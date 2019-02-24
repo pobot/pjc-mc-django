@@ -31,7 +31,7 @@ def deploy(dry=False):
             'tests',
             'pytest.ini',
         ],
-        default_opts='-arh'
+        default_opts='-arh',
         extra_opts='--dry-run' if dry else ''
     )
 

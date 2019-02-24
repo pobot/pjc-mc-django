@@ -29,7 +29,18 @@ $(document).ready(function() {
 
     function reset_input_fields() {
         for (fld in reset_values) {
-            $("#id_" + fld).val(reset_values[fld]);
+            var $fld = $("#id_" + fld);
+            if ($fld.is(':checkbox')) {
+                if (reset_values[fld]) {
+                    $fld.setAttribute("checked", "1");
+                } else {
+                    $fld.removeAttr("checked");
+                }
+            } else if ($fld.is(':radio')) {
+                alert("Radio controls not supported");
+            } else {
+                $fld.val(reset_values[fld]);
+            }
         }
     }
 
