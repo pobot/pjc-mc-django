@@ -33,8 +33,15 @@ class SPIPCommand(BaseCommand):
         self.stdout.write(spip_code)
         self.stdout.write(' END '.center(80, '-'))
 
-        pyperclip.copy(spip_code)
-        self.stdout.write("Code copied in the clipboard.")
+        try:
+            pyperclip.copy(spip_code)
+        except pyperclip.PyperclipException as e:
+            self.stderr.write(
+                "Pyperclip could not find a copy/paste mechanism for your system.\n"
+                "You'll need to copy the SPIP code manually from the terminal output."
+            )
+        else:
+            self.stdout.write("Code copied in the clipboard.")
 
     def get_spip_code(self):
         raise NotImplementedError()
