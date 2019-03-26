@@ -219,7 +219,7 @@ class TeamInlineModelAdmin(admin.TabularInline):
         return False
 
 
-def teamcontact_send_email_action(modeladmin, request, queryset):
+def teamcontact_compose_email_action(modeladmin, request, queryset):
     mail_to = ','.join((c.email for c in queryset))
     subject = '[PJC%s] ' % settings.PJC['edition']
 
@@ -227,7 +227,7 @@ def teamcontact_send_email_action(modeladmin, request, queryset):
     webbrowser.open('mailto:?to=%s&subject=%s' % (mail_to, subject.replace(' ', '%20')))
 
 
-teamcontact_send_email_action.short_description = "Envoyer un email"
+teamcontact_compose_email_action.short_description = "Composer un email"
 
 
 class HasTeamsFilter(admin.SimpleListFilter):
@@ -257,7 +257,7 @@ class HasTeamsFilter(admin.SimpleListFilter):
 class TeamContactAdmin(admin.ModelAdmin):
     inlines = [TeamInlineModelAdmin]
     list_display = ['__str__', 'school', 'email', '_has_teams']
-    actions = [teamcontact_send_email_action]
+    actions = [teamcontact_compose_email_action]
     list_filter = [HasTeamsFilter]
 
     def _has_teams(self, obj: TeamContact):

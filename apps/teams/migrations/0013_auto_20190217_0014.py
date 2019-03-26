@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+
+import share.fields
 import teams.models
 
 
@@ -16,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='school',
             name='city',
-            field=teams.models.UpperCasedField(max_length=50, verbose_name='ville'),
+            field=share.fields.UpperCasedField(max_length=50, verbose_name='ville'),
         ),
     ]

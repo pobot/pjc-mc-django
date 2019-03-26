@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+
+import share.fields
 import teams.models
 
 
@@ -16,11 +18,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='teamcontact',
             name='first_name',
-            field=teams.models.FirstNameField(max_length=30, verbose_name='prénom'),
+            field=share.fields.FirstNameField(max_length=30, verbose_name='prénom'),
         ),
         migrations.AlterField(
             model_name='teamcontact',
             name='last_name',
-            field=teams.models.LastNameField(max_length=30, verbose_name='nom'),
+            field=share.fields.LastNameField(max_length=30, verbose_name='nom'),
         ),
     ]
