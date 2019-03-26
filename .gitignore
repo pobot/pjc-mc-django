@@ -158,7 +158,7 @@ Session.vim
 tags
 
 ### Project specific
-/staticfiles/
+/collected_static/
 /*.sqlite3
 !/apps/teams/
 !/apps/display/static/display/js/bootstrap.min.js
