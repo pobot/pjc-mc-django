@@ -1,0 +1,30 @@
+body {
+    margin-top: 40px;
+}
+
+@media screen and (min-width: 300px) {
+    div.logo {
+        z-index: -10;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        margin: 10px;
+        opacity: 0.1;
+        background: url("/static/img/pobot-logo-bw.png") no-repeat;
+        background-size: 200px;
+        width: 200px;
+        height: 183px;
+    }
+}
+
+.footer {
+    bottom: 3px;
+    position: fixed;
+    width: 100%;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.bottom-spacer {
+    height: 15px;
+}

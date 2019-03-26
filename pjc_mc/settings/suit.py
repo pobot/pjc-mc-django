@@ -31,6 +31,11 @@ SUIT_CONFIG = {
         },
         '-',
         {
+            'app': 'volunteers',
+            'label': "Volontaires",
+            'icon': 'icon-user'
+        },
+        {
             'app': 'auth',
             'label': "Contrôle d'accès",
             'icon': 'icon-lock'

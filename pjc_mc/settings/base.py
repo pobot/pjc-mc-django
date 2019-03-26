@@ -14,6 +14,7 @@ import os
 import sys
 
 from django.conf.locale.fr import formats as fr_formats
+from django.conf import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -50,7 +51,8 @@ INSTALLED_APPS = [
     'display.config.DisplayAppConfig',
     'refereeing.config.RefereeingAppConfig',
     'docmaker.config.DocMakerAppConfig',
-    'spip.config.SpipAppConfig'
+    'spip.config.SpipAppConfig',
+    'volunteers.config.VolunteersAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +138,12 @@ STATICFILES_DIRS = [
 ]
 # print('STATICFILES_DIRS =', STATICFILES_DIRS)
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 SESSION_COOKIE_AGE = 60 * 60        # in minutes
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+try:
+    ADMIN_EMAIL = os.environ['PJCMC_ADMIN_EMAIL']
+except KeyError as e:
+    raise ImproperlyConfigured('Environment variable not set : %s' % e)
