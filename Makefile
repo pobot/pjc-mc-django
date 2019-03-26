@@ -11,7 +11,7 @@ deploy:
         --exclude '*.tgz' \
         --exclude data \
         --exclude requirements-dev.txt \
-        --exclude staticfiles \
+        --exclude collected_static \
         --exclude teams.txt \
         --exclude tests \
         --exclude pytest.ini \
