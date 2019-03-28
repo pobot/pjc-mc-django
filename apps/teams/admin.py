@@ -50,7 +50,7 @@ class TeamMemberInlineModelAdmin(admin.TabularInline):
 
     class Media:
         css = {
-            "all": ["/static/admin/css/team_member-inline.css"]
+            "all": ["css/teams/admin.css"]
         }
 
 
@@ -192,6 +192,7 @@ class TeamAdmin(admin.ModelAdmin, VerboseTeamNameMixin):
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     list_filter = ['city']
+    ordering = ['name']
 
     class CustomChangeList(ChangeList):
         def __init__(self, *args, **kwargs):
