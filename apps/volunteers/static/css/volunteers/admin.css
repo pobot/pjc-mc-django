@@ -1,0 +1,12 @@
+.avail {
+    color: green;
+    font-weight: bold;
+}
+
+.notavail {
+    color: red;
+}
+
+.unknown {
+    color: grey;
+}

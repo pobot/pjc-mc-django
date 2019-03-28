@@ -42,6 +42,10 @@ class Volunteer(models.Model):
         verbose_name='présent(e)',
         default=False
     )
+    notes = models.TextField(
+        verbose_name='notes',
+        blank=True
+    )
 
     def __str__(self):
         return self.full_name
