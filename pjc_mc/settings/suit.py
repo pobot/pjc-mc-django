@@ -1,3 +1,5 @@
+import os
+
 SUIT_CONFIG = {
     'ADMIN_NAME': 'POBOT Junior Cup',
     'HEADER_DATE_FORMAT': 'l j F Y',
@@ -41,5 +43,5 @@ SUIT_CONFIG = {
             'icon': 'icon-lock'
         }
     ),
-    'LIST_PER_PAGE': 15,
+    'LIST_PER_PAGE': int(os.environ.get('SUIT_LIST_PER_PAGE', "15")),
 }
