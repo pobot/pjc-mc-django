@@ -1,3 +1,6 @@
+include .env
+export 
+
 HOST=eric-laptop.local
 REMOTE_DIR=/home/eric/pjc-mc
 
@@ -22,5 +25,17 @@ deploy_db:
 
 run:
 	PYTHONPATH=. gunicorn --config gunicorn.conf pjc_mc.wsgi
+
+runserver:
+	./manage.py runserver
+
+migrations:
+	./manage.py makemigrations
+
+migrate:
+	./manage.py migrate
+
+collectstatic:
+	./manage.py collectstatic
 
 .PHONY: deploy deploy_db run
