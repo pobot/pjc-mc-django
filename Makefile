@@ -7,7 +7,6 @@ REMOTE_DIR=/home/eric/pjc-mc
 deploy:
 	rsync -Carv \
 		--exclude '.*' \
-        --exclude fabfile.py \
         --exclude '*.pyc' \
         --exclude __pycache__ \
         --exclude '*.sqlite3' \
@@ -38,4 +37,4 @@ migrate:
 collectstatic:
 	./manage.py collectstatic
 
-.PHONY: deploy deploy_db run
+.PHONY: deploy deploy_db run runserver migrations migrate collectstatic
