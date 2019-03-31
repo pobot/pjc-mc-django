@@ -15,6 +15,9 @@ import sys
 
 from django.conf.locale.fr import formats as fr_formats
 from django.conf import ImproperlyConfigured
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
