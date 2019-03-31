@@ -4,7 +4,7 @@ SUIT_CONFIG = {
     'ADMIN_NAME': 'POBOT Junior Cup',
     'HEADER_DATE_FORMAT': 'l j F Y',
     'SEARCH_URL': '',
-    'MENU_OPEN_FIRST_CHILD': False,
+    'MENU_OPEN_FIRST_CHILD': True,
     'MENU': (
         '-',
         {
@@ -15,11 +15,16 @@ SUIT_CONFIG = {
         '-',
         {
             'app': 'match',
-            'icon': 'icon-chevron-right'
+            'icon': 'icon-th-list',
+            'models': (
+                {'model': 'match.Robotics1', 'label': 'Epreuve 1'},
+                {'model': 'match.Robotics2', 'label': 'Epreuve 2'},
+                {'model': 'match.Robotics3', 'label': 'Epreuve 3'},
+            )
         },
         {
             'app': 'research',
-            'icon': 'icon-chevron-right'
+            'icon': 'icon-picture',
         },
         '-',
         {
@@ -27,16 +32,18 @@ SUIT_CONFIG = {
             'icon': 'icon-flag',
             'models': ('Planning', 'PlanningControl', 'Ranking')
         },
+        '-',
         {
             'app': 'display',
-            'icon': 'icon-picture'
+            'icon': 'icon-film'
         },
         '-',
         {
             'app': 'volunteers',
-            'label': "Volontaires",
-            'icon': 'icon-user'
+            'icon': 'icon-heart',
+            'url': 'volunteers.Volunteer',
         },
+        '-',
         {
             'app': 'auth',
             'label': "Contrôle d'accès",
