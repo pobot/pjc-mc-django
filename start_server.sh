@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-PYTHONPATH=. gunicorn --config gunicorn.conf pjc_mc.wsgi
+PYTHONPATH=. gunicorn --config gunicorn/config.py pjc_mc.wsgi
