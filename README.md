@@ -64,9 +64,8 @@ Clonez ensuite le projet, et installez les dépendances via :
 Cette commande installera les packages utilisés pour le développement en plus des paquets
 du runtime.
 
-A noter que **Fabric3** (https://github.com/mathiasertl/fabric/) est inclus dans la liste
-des paquets de développement. Il n'est pas strictement nécessaire et n'est en fait utilisé
-que pour simplifier le déploiement sur le serveur d'exploitation.
+Fabric n'est plus utilisé dans les dernières versions et a été remplacé par un Makefile,
+compte tenu de la simplicité des tâches à gérer. Ca fait toujours une dépendance en moins ;)
 
 ## Remarques techniques
 

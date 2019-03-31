@@ -1,7 +1,6 @@
 -r requirements.txt
 
 bumpversion
-Fabric3>=1.13
 mock
 packaging
 py
