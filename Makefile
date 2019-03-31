@@ -23,7 +23,7 @@ deploy_db:
 	rsync -Carv db.sqlite3 $(HOST):$(REMOTE_DIR)/
 
 run:
-	PYTHONPATH=. gunicorn --config gunicorn.conf pjc_mc.wsgi
+	PYTHONPATH=. gunicorn --config gunicorn/config.py pjc_mc.wsgi
 
 runserver:
 	./manage.py runserver
