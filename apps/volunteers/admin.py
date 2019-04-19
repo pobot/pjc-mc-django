@@ -27,6 +27,7 @@ class VolunteerAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'email', 'status_styled', 'present']
     actions = [volunteer_compose_email_action]
     list_filter = ['status', 'present']
+    list_editable = ['present',]
 
     status_styles = {
         '?': 'unknown',
