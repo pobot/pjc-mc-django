@@ -1,11 +1,10 @@
 appdirs==1.4.3
 arrow>=0.10
-Django==1.11
-django-suit==0.2.25
+Django>=1.11.18,<2
+django-suit
 django-bootstrap3>=9
 gunicorn
-reportlab==3.4.0
-whitenoise==3.3.0
-pyperclip==1.6.0
+reportlab==3.5.21
+pyperclip
 python-dotenv>=0.10
 whitenoise>=4
