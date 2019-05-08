@@ -31,10 +31,10 @@ class DiplomasGenerator(ReportGenerator):
     description = "diplomas and certificates for teams"
     page_width, page_height = page_size = landscape(A4)
 
-    frame_x0 = 50
-    frame_y0 = 50
     frame_width = 730
     frame_height = 500
+    frame_x0 = (page_width - frame_width) / 2
+    frame_y0 = (page_height - frame_height) / 2
 
     frame_bkgnd_color = HexColor(0xe5eaef)
 
@@ -109,7 +109,7 @@ class DiplomasGenerator(ReportGenerator):
         )
 
         self._draw_text(
-            "à Valbonne, Alpes Maritimes le %s" % settings.PJC['event_date'],
+            "à Valbonne, Alpes-Maritimes le %s" % settings.PJC['event_date'],
             x=self.page_width * 0.66,
             y=self.frame_height * 0.25,
             color=black,
