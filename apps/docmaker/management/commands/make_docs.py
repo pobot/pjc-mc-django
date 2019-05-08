@@ -13,7 +13,7 @@ from docmaker.generators.planning import PlanningGenerator
 from docmaker.generators.teams_list import TeamsListGenerator
 from docmaker.generators.signs import SignsGenerator
 from docmaker.generators.match_forms import RoboticsMatchFormGenerator
-from docmaker.generators.certificates import CertificateGenerator
+from docmaker.generators.diplomas import DiplomasGenerator
 from docmaker.generators.poster_evaluation import PostersEvalGridGenerator
 from docmaker.generators.team_registration_form import TeamRegistrationFormGenerator
 
@@ -31,7 +31,7 @@ _generators = {
     't': TeamsListGenerator,
     's': SignsGenerator,
     'r': RoboticsMatchFormGenerator,
-    'c': CertificateGenerator,
+    'd': DiplomasGenerator,
     'g': PostersEvalGridGenerator,
     'f': TeamRegistrationFormGenerator,
 }
