@@ -26,7 +26,7 @@ run:
 	PYTHONPATH=. gunicorn --config gunicorn/config.py pjc_mc.wsgi
 
 runserver:
-	./manage.py runserver
+	./manage.py runserver 0:8000
 
 migrations:
 	./manage.py makemigrations
