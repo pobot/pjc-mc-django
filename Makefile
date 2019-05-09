@@ -6,7 +6,7 @@ REMOTE_DIR=/home/eric/pjc-mc
 
 deploy:
 	rsync -Carv \
-		--exclude '.*' \
+	    --exclude '.*' \
         --exclude '*.pyc' \
         --exclude __pycache__ \
         --exclude '*.sqlite3' \
