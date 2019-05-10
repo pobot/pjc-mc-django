@@ -1,0 +1,87 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+{% load pjcmc_extras %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        table.mosaic {
+            margin: 0px auto;
+        }
+        table.mosaic td {
+            padding: 30px;
+            text-align: center;
+        }
+        table.mosaic img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="container">
+        <div class="well">
+            <h1>POBOT Junior Cup Edition {% pjc_edition %}</h1>
+            <p class="lead">Administration</p>
+        </div>
+        <table class="mosaic">
+            <tr>
+                <td>
+                    <a href="{% url 'admin:teams_team_changelist' %}">
+                        <img src="{% static "img/teams.jpg" %}"
+                             class="img-circle"
+                        >
+                    </a>
+                    <br>
+                    Equipes
+                </td>
+                <td>
+                    <a href="{% url 'admin:event_planningcontrol_changelist' %}">
+                        <img src="{% static "img/agenda.png" %}"
+                             class="img-circle"
+                        >
+                    </a>
+                    <br>
+                    Avancement
+                </td>
+                <td>
+                    <a href="{% url 'admin:display_displaysettings_changelist' %}">
+                        <img src="{% static "img/lcd-tv.jpg" %}"
+                             class="img-circle"
+                        >
+                    </a>
+                    <br>
+                    Affichage TV
+                </td>
+                <td>
+                    <a href="{% url 'admin:event_ranking_changelist' %}">
+                        <img src="{% static "img/results.png" %}"
+                             class="img-circle"
+                        >
+                    </a>
+                    <br>
+                    Résultats
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="{% static 'docs/rules.pdf' %}">
+                        <img src="{% static "img/rules.png" %}"
+                             class="img-circle"
+                             alt="Consulter le règlement"
+                        >
+                    </a>
+                    <br>
+                    Document du règlement
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
