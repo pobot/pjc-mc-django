@@ -1,10 +1,12 @@
 from django.contrib import admin
 
+from solo.admin import SingletonModelAdmin
+
 from .models import *
 
 
 @admin.register(DisplaySettings)
-class DisplayAdmin(admin.ModelAdmin):
+class DisplayAdmin(SingletonModelAdmin):
     actions = None
     list_display = ['summary', 'action']
     list_display_links = ['action']

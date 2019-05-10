@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third-party
     'bootstrap3',
+    'solo',
     # application
     'teams.config.TeamsAppConfig',
     'match.config.MatchAppConfig',

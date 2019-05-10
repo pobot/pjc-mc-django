@@ -5,6 +5,8 @@ from enum import Enum
 from django.db import models
 from django.core import validators
 
+from solo.models import SingletonModel
+
 
 class Display(Enum):
     checkin = 1
@@ -46,7 +48,7 @@ ALL_DISPLAYS = [Display.checkin, Display.planning, Display.scores, Display.next_
 DISPLAY_NAMES = [d.name for d in ALL_DISPLAYS]
 
 
-class DisplaySettings(models.Model):
+class DisplaySettings(SingletonModel):
     class Meta:
         app_label = 'display'
         verbose_name = "configuration"

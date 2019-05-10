@@ -3,6 +3,7 @@ arrow>=0.10
 Django>=1.11.18,<2
 django-suit
 django-bootstrap3>=9
+django-solo
 gunicorn
 reportlab==3.5.21
 pyperclip
