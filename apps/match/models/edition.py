@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator
 from django.db import models
 
-from match.models.generic import RoboticsMatch, MSG_COUNTS_MISMATCH, MatchDurationField, MATCH_DURATION
+from match.models.generic import (
+    RoboticsMatch,
+    MatchDurationField, ConstrainedCountField,
+    MSG_COUNTS_MISMATCH, MATCH_DURATION,
+)
 
 __author__ = 'Eric Pascual'
 
@@ -53,10 +56,10 @@ class SectionBasedMatch(BaseMatch):
     class Meta:
         abstract = True
 
-    sections = models.PositiveSmallIntegerField(
+    sections = ConstrainedCountField(
         verbose_name='sections parcourues',
         default=0,
-        validators=[MaxValueValidator(limit_value=MAX_SECTIONS)]
+        max_value=MAX_SECTIONS,
     )
 
     def get_action_points(self):
@@ -119,15 +122,15 @@ class Robotics3(BaseMatch):
         verbose_name = 'résultat épreuve 3'
         verbose_name_plural = 'résultats épreuve 3'
 
-    captured_objects = models.PositiveSmallIntegerField(
+    captured_objects = ConstrainedCountField(
         verbose_name='objets récupérés',
         default=0,
-        validators=[MaxValueValidator(limit_value=MAX_OBJECTS)]
+        max_value=MAX_OBJECTS
     )
-    deposited_objects = models.PositiveSmallIntegerField(
+    deposited_objects = ConstrainedCountField(
         verbose_name='objets déposés',
         default=0,
-        validators=[MaxValueValidator(limit_value=MAX_OBJECTS)]
+        max_value=MAX_OBJECTS
     )
 
     def clean(self):

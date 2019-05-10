@@ -103,6 +103,14 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     def get_random_config(cls):
         raise NotImplementedError()
 
+    def customize_form(self, form):
+        pass
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        self.customize_form(form)
+        return form
+
 
 def robotics_form_class(match_num):
     class Form(ModelForm):
@@ -116,8 +124,15 @@ def robotics_form_class(match_num):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            # propose only teams who have not already participated to this round
-            self.fields['team'].queryset = Team.objects.filter(**{'robotics%d__isnull' % match_num: True})
+
+            # if there are data, it means that the form is redisplayed to show errors => restrict the
+            # selection to the involved team
+            data = kwargs.get('data')
+            if data is not None:
+                self.fields['team'].queryset = Team.objects.filter(num=int(data['team']))
+            else:
+                # propose only teams who have not already participated to this round
+                self.fields['team'].queryset = Team.objects.filter(**{'robotics%d__isnull' % match_num: True})
 
     return Form
 

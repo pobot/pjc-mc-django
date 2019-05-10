@@ -44,7 +44,7 @@ $(document).ready(function() {
         }
     }
 
-    $div_team_dependant.hide();
+    // $div_team_dependant.hide();
     $team_select.change(function () {
         if ($team_select.val()) {
             $div_team_dependant.fadeIn();
@@ -79,8 +79,11 @@ $(document).ready(function() {
         $("#result_form").submit();
     });
 
-    $("input[type='number']").TouchSpin({
-       min: 0
+    $("input[type='number']").each(function () {
+        $(this).TouchSpin({
+            min: $(this).attr("min"),
+            max: $(this).attr("max")
+        });
     });
 
     $btn_sw_start.click(function () {
