@@ -27,6 +27,8 @@ $(document).ready(function() {
     var $div_config = $("#div_config");
     var $btn_config = $("#btn_config");
 
+    var $action_buttons = $("#action_buttons a.btn");
+
     function reset_input_fields() {
         for (fld in reset_values) {
             var $fld = $("#id_" + fld);
@@ -97,6 +99,9 @@ $(document).ready(function() {
         if (!wc_countdown_running) {
             $btn_wc_start.click();
         }
+
+        // disable action buttons
+        $action_buttons.toggleClass("disabled");
     });
 
     $btn_sw_stop.click(function () {
@@ -113,6 +118,9 @@ $(document).ready(function() {
             }
             $used_time_field.val("0" + mins + ":" + secs);
         }
+
+        // re-enable action buttons
+        $action_buttons.toggleClass("disabled");
     });
 
     function update_match_countdown() {

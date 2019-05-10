@@ -50,12 +50,12 @@
             {% for field in form %}
                 {% bootstrap_field field exclude='team' layout='horizontal' %}
             {% endfor %}
-            <div class="well well-sm btn-group btn-group-justified" role="group">
-                {% bootstrap_button "Terminé" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
+            <div class="well well-sm btn-group btn-group-justified" id="action_buttons" role="group">
                 {% url 'refereeing:home' as home_url %}
+                {% bootstrap_button "Terminé" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
                 {% bootstrap_button "Annuler" href=home_url icon="remove" button_class="btn-default"%}
-                {% if multi_trials_allowed %}
-                    {% bootstrap_button "Refaire" id="reset" href="#" icon="reset" button_class="btn-warning" %}
+                {% if multi_trials_allowed and not form.errors %}
+                    {% bootstrap_button "Rejouer" id="reset" href="#" icon="reset" button_class="btn-warning" %}
                 {% endif %}
             </div>
         </div>
