@@ -40,4 +40,4 @@ class Command(BaseCommand):
             ))
 
         updated = Team.objects.filter(present=True).update(present=False)
-        self.stdout.write('- Teams presence : %s updated' % self._humanized_rows_count(deleted))
+        self.stdout.write('- Teams presence : %s updated' % self._humanized_rows_count(updated))
