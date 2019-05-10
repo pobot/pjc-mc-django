@@ -5,6 +5,9 @@
 {% block extrastyle %}
     {{ block.super }}
     <style>
+        div#content-main {
+            width: 100%;
+        }
         table.mosaic {
             margin: 0px auto;
         }
@@ -15,6 +18,7 @@
         table.mosaic img {
             width: 150px;
             height: 150px;
+            min-width: 150px;
         }
     </style>
 {% endblock %}
@@ -26,7 +30,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-    <div id="content-main" class="container">
+    <div id="content-main">
         <div class="well">
             <h1>POBOT Junior Cup Edition {% pjc_edition %}</h1>
             <p class="lead">Administration</p>
