@@ -11,7 +11,7 @@ __author__ = 'Eric Pascual'
 class RoboticsMatchFormGenerator(TeamReportGenerator):
     title = "Robotique"
     output_file_name = 'match_forms'
-    description = "individual team match form"
+    description = "robotics match forms"
 
     H_UNIT = 6.7 / 4 * inch
 
@@ -31,23 +31,39 @@ class RoboticsMatchFormGenerator(TeamReportGenerator):
 
     def _match1_items(self):
         yield Paragraph(
-            "Nombre de quadrants intégralement parcourus",
+            "Nombre de murs franchis (0 <= n <= 8)",
+            style=cell_body
+        )
+        yield Paragraph(
+            "Temps restant (mm:ss)",
             style=cell_body
         )
 
     def _match2_items(self):
         yield Paragraph(
-            "Nombre de quadrants intégralement parcourus",
+            "Nombre de murs franchis (0 <= n <= 8)",
             style=cell_body
         )
         yield Paragraph(
-            "Nombre d'obstacles déplacés (i.e. en partie hors limite)",
+            "Objet ramené dans la pièce de départ ?",
+            style=cell_body
+        )
+        yield Paragraph(
+            "Temps restant (mm:ss)",
             style=cell_body
         )
 
     def _match3_items(self):
         yield Paragraph(
-            "Nombre de quadrants intégralement parcourus",
+            "Nombre d'objets sortis de leur pièce (0 <= n1 <= 2)",
+            style=cell_body
+        )
+        yield Paragraph(
+            "Nombre d'objets déposés (0 <= n2 <= 2, n2 <= n1)",
+            style=cell_body
+        )
+        yield Paragraph(
+            "Temps restant (mm:ss)",
             style=cell_body
         )
 
