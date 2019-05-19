@@ -102,7 +102,7 @@ class Robotics2(SectionBasedMatch):
           - 8 sections traveled
           - object retrieved
         """
-        return super().mission_complete_credit() + cls.OBJECT_RETRIEVED_POINTS
+        return cls.SECTION_POINTS * cls.MAX_SECTIONS + cls.OBJECT_RETRIEVED_POINTS
 
     def get_action_points(self):
         return super().get_action_points() + (self.OBJECT_RETRIEVED_POINTS if self.object_retrieved else 0)
