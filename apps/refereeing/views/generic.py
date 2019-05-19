@@ -68,8 +68,8 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
     used_time_field = None
     # tells if multiple trials are allowed for the match
     multi_trials_allowed = False
-    # field reset values
-    reset_values = {}
+    # input fields
+    input_fields = {}
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -95,7 +95,7 @@ class RoboticsBaseView(LoginRequiredMixin, CreateView, AppMixin, MatchMixin):
             'config_only_once': 'config_only_once' if self.config_only_once else '',
             'used_time_field': self.used_time_field or '',
             'multi_trials_allowed': self.multi_trials_allowed,
-            'reset_values': json.dumps(self.reset_values),
+            'input_fields': json.dumps(self.input_fields),
         })
         return super().get_context_data(**kwargs)
 

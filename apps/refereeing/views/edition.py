@@ -9,7 +9,7 @@ class Robotics1CreateView(RoboticsBaseView):
     form_class = robotics_form_class(match_num)
     multi_trials_allowed = True
     used_time_field = "used_time"
-    reset_values = {
+    input_fields = {
         'sections': 0
     }
 
@@ -19,7 +19,7 @@ class Robotics2CreateView(RoboticsBaseView):
     form_class = robotics_form_class(match_num)
     multi_trials_allowed = True
     used_time_field = "used_time"
-    reset_values = {
+    input_fields = {
         'sections': 0,
         'object_retrieved': False,
     }
@@ -30,7 +30,7 @@ class Robotics3CreateView(RoboticsBaseView):
     form_class = robotics_form_class(match_num)
     multi_trials_allowed = True
     used_time_field = "used_time"
-    reset_values = {
+    input_fields = {
         'captured_objects': 0,
         'deposited_objects': 0,
     }

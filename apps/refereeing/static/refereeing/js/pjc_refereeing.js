@@ -20,20 +20,20 @@ $(document).ready(function() {
 
     var staging = true;
 
-    var $btn_reset = $("#reset");
+    var $btn_submit = $("#btn_submit");
+    var $btn_reset = $("#btn_reset");
+    var $btn_cancel = $("#btn_cancel");
 
     var $team_select = $("#id_team");
     var $div_team_dependant = $("#team_dependant");
     var $div_config = $("#div_config");
     var $btn_config = $("#btn_config");
 
-    var $action_buttons = $("#action_buttons a.btn");
-
     function reset_input_fields() {
-        for (fld in reset_values) {
+        for (var fld in input_fields) {
             var $fld = $("#id_" + fld);
             if ($fld.is(':checkbox')) {
-                if (reset_values[fld]) {
+                if (input_fields[fld]) {
                     $fld.setAttribute("checked", "1");
                 } else {
                     $fld.removeAttr("checked");
@@ -41,7 +41,7 @@ $(document).ready(function() {
             } else if ($fld.is(':radio')) {
                 alert("Radio controls not supported");
             } else {
-                $fld.val(reset_values[fld]);
+                $fld.val(input_fields[fld]);
             }
         }
     }
@@ -77,7 +77,7 @@ $(document).ready(function() {
         });
     });
 
-    $("a[type='submit']").click(function () {
+    $btn_submit.click(function () {
         $("#result_form").submit();
     });
 
@@ -100,8 +100,10 @@ $(document).ready(function() {
             $btn_wc_start.click();
         }
 
-        // disable action buttons
-        $action_buttons.toggleClass("disabled");
+        // disable action buttons to avoid unwanted actions
+        $btn_submit.addClass("disabled");
+        $btn_reset.addClass("disabled");
+        $btn_cancel.addClass("disabled");
     });
 
     $btn_sw_stop.click(function () {
@@ -120,7 +122,10 @@ $(document).ready(function() {
         }
 
         // re-enable action buttons
-        $action_buttons.toggleClass("disabled");
+        // make action buttons active again
+        $btn_submit.removeClass("disabled");
+        $btn_reset.removeClass("disabled");
+        $btn_cancel.removeClass("disabled");
     });
 
     function update_match_countdown() {
@@ -209,7 +214,9 @@ $(document).ready(function() {
         $btn_sw_stop.addClass("disabled");
 
         reset_input_fields();
+    });
 
- })
-
+    if ($("#error-alert").length === 0) {
+        $btn_submit.addClass("disabled");
+    }
 });

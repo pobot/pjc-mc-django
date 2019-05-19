@@ -11,7 +11,7 @@ from teams.models import TeamLinkedModel
 
 __author__ = 'Eric Pascual'
 MATCH_DURATION = timedelta(minutes=2, seconds=30)
-MSG_COUNTS_MISMATCH = "décomptes non cohérents"
+MSG_VALUES_MISMATCH = "valeurs incohérentes"
 
 
 class RoboticsMatch(TeamLinkedModel):

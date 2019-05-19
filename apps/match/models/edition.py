@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,7 +7,7 @@ from django.db import models
 from match.models.generic import (
     RoboticsMatch,
     MatchDurationField, ConstrainedCountField,
-    MSG_COUNTS_MISMATCH, MATCH_DURATION,
+    MSG_VALUES_MISMATCH, MATCH_DURATION,
 )
 
 __author__ = 'Eric Pascual'
@@ -28,8 +29,7 @@ class BaseMatch(RoboticsMatch):
 
     used_time = MatchDurationField(
         verbose_name='temps utilisé',
-        default=MATCH_DURATION,
-        validators=[validators.MaxValueValidator(MATCH_DURATION)]
+        validators=[validators.MaxValueValidator(MATCH_DURATION - timedelta(seconds=1))]
     )
 
     @classmethod
@@ -92,7 +92,7 @@ class Robotics2(SectionBasedMatch):
         verbose_name_plural = 'résultats épreuve 2'
 
     object_retrieved = models.BooleanField(
-        verbose_name='objet récupéré',
+        verbose_name='objet récupéré ?',
         default=False,
     )
 
@@ -110,6 +110,13 @@ class Robotics2(SectionBasedMatch):
     def get_detail(self):
         bonus = self.get_time_bonus(self.get_action_points())
         return f"sections : {self.sections}, objet récupéré : {self.object_retrieved}, bonus temps : {bonus}"
+
+    def clean(self):
+        if self.object_retrieved and self.sections < self.MAX_SECTIONS:
+            raise ValidationError({
+                'sections': MSG_VALUES_MISMATCH,
+                'object_retrieved': MSG_VALUES_MISMATCH
+            })
 
 
 class Robotics3(BaseMatch):
@@ -136,8 +143,8 @@ class Robotics3(BaseMatch):
     def clean(self):
         if self.deposited_objects > self.captured_objects:
             raise ValidationError({
-                'captured_objects': MSG_COUNTS_MISMATCH,
-                'deposited_objects': MSG_COUNTS_MISMATCH
+                'captured_objects': MSG_VALUES_MISMATCH,
+                'deposited_objects': MSG_VALUES_MISMATCH
             })
 
     @classmethod

@@ -10,7 +10,7 @@
     <script>
         var $used_time_field = {% if used_time_field %} $("#id_{{ used_time_field }}") {% else %} null {% endif %};
         var url_rnd_config = '{% url "refereeing:rnd_config" match_num=match_num %}';
-        var reset_values = {{ reset_values | safe }};
+        var input_fields = {{ input_fields | safe }};
     </script>
     <script src="{% static 'refereeing/js/pjc_refereeing.js' %}"></script>
 {% endblock %}
@@ -30,7 +30,9 @@
                     </div>
                 </div>
             {% endif %}
-            {% if not form.errors %}
+            {% if form.errors %}
+                <div id="error-alert" class="alert alert-danger"><p>Des erreurs de saisie ont été détectées.</p></div>
+            {% else %}
                 <div class="container row">
                     <div id="wallclock" class="col col-xs-6 well well-sm">
                         <div class="text-center"><span id="wc_time" class="h1">10:00</span></div>
@@ -52,10 +54,10 @@
             {% endfor %}
             <div class="well well-sm btn-group btn-group-justified" id="action_buttons" role="group">
                 {% url 'refereeing:home' as home_url %}
-                {% bootstrap_button "Terminé" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
-                {% bootstrap_button "Annuler" href=home_url icon="remove" button_class="btn-default"%}
+                {% bootstrap_button "Terminé" id="btn_submit" button_type="submit" href="#" icon="ok" button_class="btn-success"%}
+                {% bootstrap_button "Annuler" id="btn_cancel" href=home_url icon="remove" button_class="btn-default"%}
                 {% if multi_trials_allowed and not form.errors %}
-                    {% bootstrap_button "Rejouer" id="reset" href="#" icon="reset" button_class="btn-warning" %}
+                    {% bootstrap_button "Rejouer" id="btn_reset" href="#" icon="reset" button_class="btn-warning disabled" %}
                 {% endif %}
             </div>
         </div>
