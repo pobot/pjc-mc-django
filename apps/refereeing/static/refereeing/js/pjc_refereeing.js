@@ -1,22 +1,22 @@
 $(document).ready(function() {
     // stop watch
-    var $btn_sw_start = $("#sw_start");
-    var $btn_sw_stop = $("#sw_stop");
-    var $sw_time = $("#sw_time");
+    var $btn_match_sw_start = $("#match_sw_start");
+    var $btn_match_sw_stop = $("#match_sw_stop");
+    var $match_sw_time = $("#match_sw_time");
 
     var MATCH_DURATION = 150;   // 2mn30
     var match_countdown = MATCH_DURATION;
     var match_countdown_running = false;
 
     // wall clock
-    var $btn_wc_start = $("#wc_start");
-    var $wc_time = $("#wc_time");
+    var $btn_team_slot_start = $("#team_slot_start");
+    var $team_slot_time = $("#team_slot_time");
 
-    var wc_countdown_running = false;
-    var wc_countdown = 10 * 60;     // 10mn
-    var wc_staging_limit = 7 * 60;
-    var wc_staging_warning = 7 * 60 + 30;
-    var wc_retry_limit = 4 * 60;
+    var team_slot_countdown_running = false;
+    var team_slot_countdown = 10 * 60;     // 10mn
+    var team_slot_staging_limit = 7 * 60;
+    var team_slot_staging_warning = 7 * 60 + 30;
+    var team_slot_retry_limit = 4 * 60;
 
     var staging = true;
 
@@ -88,16 +88,16 @@ $(document).ready(function() {
         });
     });
 
-    $btn_sw_start.click(function () {
+    $btn_match_sw_start.click(function () {
         staging = false;
         match_countdown_running = true;
         update_match_countdown();
-        $btn_sw_start.toggleClass("disabled");
-        $btn_sw_stop.toggleClass("disabled");
+        $btn_match_sw_start.addClass("disabled");
+        $btn_match_sw_stop.removeClass("disabled");
 
         // starts wall clock if not yet done
-        if (!wc_countdown_running) {
-            $btn_wc_start.click();
+        if (!team_slot_countdown_running) {
+            $btn_team_slot_start.click();
         }
 
         // disable action buttons to avoid unwanted actions
@@ -106,10 +106,10 @@ $(document).ready(function() {
         $btn_cancel.addClass("disabled");
     });
 
-    $btn_sw_stop.click(function () {
+    $btn_match_sw_stop.click(function () {
         match_countdown_running = false;
-        $btn_sw_start.toggleClass("disabled");
-        $btn_sw_stop.toggleClass("disabled");
+        $btn_match_sw_start.addClass("disabled");
+        $btn_match_sw_stop.removeClass("disabled");
 
         if ($used_time_field !== null) {
             var elapsed = 149 - match_countdown;
@@ -135,70 +135,70 @@ $(document).ready(function() {
             if (secs < 10) {
                 secs = "0" + secs;
             }
-            $sw_time.text(mins + ":" + secs);
+            $match_sw_time.text(mins + ":" + secs);
 
             if (match_countdown > 0) {
                 if (match_countdown === 15) {
-                    $sw_time.addClass('text-warning');
+                    $match_sw_time.addClass('text-warning');
                 }
                 match_countdown--;
                 setTimeout(update_match_countdown, 1000);
 
             } else {
                 match_countdown_running = false;
-                $sw_time.removeClass('text-warning');
-                $sw_time.addClass('text-danger');
-                $btn_sw_stop.toggleClass("disabled");
+                $match_sw_time.removeClass('text-warning');
+                $match_sw_time.addClass('text-danger');
+                $btn_match_sw_stop.addClass("disabled");
             }
         }
     }
 
-    $btn_wc_start.click(function () {
+    $btn_team_slot_start.click(function () {
         update_wall_clock();
-        $btn_wc_start.toggleClass("disabled");
-        wc_countdown_running = true;
+        $btn_team_slot_start.addClass("disabled");
+        team_slot_countdown_running = true;
     });
 
     function update_wall_clock() {
-        var mins = Math.floor(wc_countdown / 60);
-        var secs = Math.floor(wc_countdown % 60);
+        var mins = Math.floor(team_slot_countdown / 60);
+        var secs = Math.floor(team_slot_countdown % 60);
         if (secs < 10) {
             secs = "0" + secs;
         }
-        $wc_time.text(mins + ":" + secs);
+        $team_slot_time.text(mins + ":" + secs);
         // update wall clock display attributes to reflect that
         // a match has been started
         if (match_countdown_running) {
-            $wc_time.addClass('text-success');
+            $team_slot_time.addClass('text-success');
         }
 
-        if (wc_countdown > 0) {
-            switch (wc_countdown) {
-                case wc_staging_warning:
+        if (team_slot_countdown > 0) {
+            switch (team_slot_countdown) {
+                case team_slot_staging_warning:
                     if (staging) {
-                        $wc_time.addClass('text-info');
+                        $team_slot_time.addClass('text-info');
                     }
                     break;
-                case wc_staging_limit:
+                case team_slot_staging_limit:
                     if (staging && !match_countdown_running) {
-                        $wc_time.removeClass('text-info');
-                        $wc_time.addClass('text-warning');
+                        $team_slot_time.removeClass('text-info');
+                        $team_slot_time.addClass('text-warning');
                     }
                     break;
-                case wc_retry_limit:
-                    $wc_time.removeClass('text-success');
-                    $wc_time.addClass('text-warning');
+                case team_slot_retry_limit:
+                    $team_slot_time.removeClass('text-success');
+                    $team_slot_time.addClass('text-warning');
 
                     $btn_reset.addClass('disabled');
                     break;
             }
 
-            wc_countdown--;
+            team_slot_countdown--;
             setTimeout(update_wall_clock, 1000);
 
         } else {
-            $wc_time.removeClass('text-warning');
-            $wc_time.addClass('text-danger');
+            $team_slot_time.removeClass('text-warning');
+            $team_slot_time.addClass('text-danger');
         }
     }
 
@@ -206,12 +206,12 @@ $(document).ready(function() {
         match_countdown_running = false;
         match_countdown = MATCH_DURATION;
 
-        $sw_time.text("2:30");
-        $sw_time.removeClass('text-warning');
-        $sw_time.removeClass('text-danger');
+        $match_sw_time.text("2:30");
+        $match_sw_time.removeClass('text-warning');
+        $match_sw_time.removeClass('text-danger');
 
-        $btn_sw_start.removeClass("disabled");
-        $btn_sw_stop.addClass("disabled");
+        $btn_match_sw_start.removeClass("disabled");
+        $btn_match_sw_stop.addClass("disabled");
 
         reset_input_fields();
     });
