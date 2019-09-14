@@ -5,7 +5,7 @@ import os
 from event.models import Ranking, RankingType
 from teams.models import Team
 
-from .lib import SPIPCommand
+from ._lib import SPIPCommand
 
 __author__ = 'Eric Pascual'
 

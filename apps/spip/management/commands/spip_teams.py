@@ -4,7 +4,7 @@ import os
 
 from teams.models import Team
 
-from .lib import SPIPCommand
+from ._lib import SPIPCommand
 
 __author__ = 'Eric Pascual'
 
