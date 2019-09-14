@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^results/arduino', ResultsArduinoView.as_view(), name='results_arduino'),
     url(r'^results/rpi', ResultsRPiView.as_view(), name='results_rpi'),
 
+    url(r'^best/robot$', BestRobotView.as_view(), name='best_robot'),
     url(r'^best/lego$', BestLegoView.as_view(), name='best_lego'),
     url(r'^best/arduino', BestArduinoView.as_view(), name='best_arduino'),
     url(r'^best/rpi', BestRPiView.as_view(), name='best_rpi'),

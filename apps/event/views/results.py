@@ -18,7 +18,7 @@ __all__ = [
     'LoginForm',
     'HomeView',
     'ResultsLegoView', 'ResultsArduinoView', 'ResultsRPiView',
-    'BestLegoView', 'BestArduinoView', 'BestRPiView',
+    'BestRobotView', 'BestLegoView', 'BestArduinoView', 'BestRPiView',
     'BestResearchView', 'BestPosterView'
 ]
 
@@ -57,7 +57,7 @@ class ResultsView(EventView, TemplateView):
         context = super().get_context_data(**kwargs)
         context.update({
             'title': self.title % self.result_type,
-            'ranking': self.get_ranking()
+            'ranking': self.get_ranking(),
         })
         return context
 
@@ -102,12 +102,19 @@ class BestView(ResultsView):
         return [
             {
                 'rank': getattr(result, self.criterion),
-                'team': result.team.name
+                'team': result.team.name,
+                'category': result.team.category.name if self.category == RankingType.Scratch else None,
             } for result in self.get_queryset()
         ]
 
     def get_queryset(self):
         return Ranking.objects.filter(type_code=self.category.value).order_by(self.criterion)[:1]
+
+
+class BestRobotView(BestView):
+    result_type = 'Robot (scratch)'
+    category = RankingType.Scratch
+    criterion = 'robotics'
 
 
 class BestLegoView(BestView):

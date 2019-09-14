@@ -5,7 +5,7 @@
 {% block bootstrap3_extra_head %}
     {{  block.super }}
     <style>
-        p.winners {
+        span.winner {
             color: darkgoldenrod;
             font-weight: bold;
         }
@@ -14,7 +14,8 @@
 
 {% block page_content %}
     {% for item in ranking %}
-        <p class="{% if item.rank == 1 %}winners{% endif %}">{{ item.rank }} - {{ item.team }}</p>
+        <p> <span class="{% if item.rank == 1 %}winner{% endif %}">{{ item.rank }} - {{ item.team }}</span>
+            {% if item.category %} - {{ item.category }}{% endif %}</p>
     {% empty %}
         <div class="alert alert-warning">Aucun résultat dans cette catégorie</div>
     {% endfor %}
