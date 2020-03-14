@@ -1,0 +1,35 @@
+version: '3'
+services:
+  django-app:
+    image: local/pjc_mc:latest
+    container_name: django-app
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - pjc_mc
+    environment:
+      - DATABASE_URL
+      - SECRET_KEY
+      - PJCMC_ADMIN_EMAIL
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - pjcmc_db_data:/var/lib/postgresql/data
+    networks:
+      - pjc_mc
+
+networks:
+  pjc_mc:
+    external: true
+
+volumes:
+  pjcmc_db_data:
+    driver: local

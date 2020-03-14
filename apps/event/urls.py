@@ -16,7 +16,7 @@ urlpatterns = [
             'brand': settings.PJC['brand']
         }
     }, name='login'),
-    url(r'^logout$', auth_views.logout, {'next_page': reverse_lazy('event:home')}, name='logout'),
+    url(r'^logout$', auth_views.logout, {'next_page': reverse_lazy('finals:home')}, name='logout'),
     url(r'^results/lego$', ResultsLegoView.as_view(), name='results_lego'),
     url(r'^results/arduino', ResultsArduinoView.as_view(), name='results_arduino'),
     url(r'^results/rpi', ResultsRPiView.as_view(), name='results_rpi'),

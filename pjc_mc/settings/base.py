@@ -15,9 +15,8 @@ import sys
 
 from django.conf.locale.fr import formats as fr_formats
 from django.conf import ImproperlyConfigured
-from dotenv import load_dotenv
 
-load_dotenv()
+from ._env import env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -28,9 +27,8 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # This is not to kept like this in a production application exposed on the Internet,
 # but we don't care here
-SECRET_KEY = 'rx6@n_*89)$be-ghi)jo=lud62t9005c-4b^mt+a-1^l!sek$i'
-DEBUG = True
-# print('DEBUG =', DEBUG)
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -96,10 +94,7 @@ WSGI_APPLICATION = 'pjc_mc.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db()
 }
 
 
@@ -148,6 +143,6 @@ SESSION_COOKIE_AGE = 60 * 60        # in minutes
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 try:
-    ADMIN_EMAIL = os.environ['PJCMC_ADMIN_EMAIL']
+    ADMIN_EMAIL = env('PJCMC_ADMIN_EMAIL')
 except KeyError as e:
     raise ImproperlyConfigured('Environment variable not set : %s' % e)

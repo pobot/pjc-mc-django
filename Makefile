@@ -4,6 +4,27 @@ export
 HOST=eric-laptop.local
 REMOTE_DIR=/home/eric/pjc-mc
 
+image:
+	docker build -f docker/Dockerfile -t local/pjc_mc:latest .
+
+run-image:
+	docker run -it --rm local/pjc_mc:latest ./manage.py runserver
+
+dc-up:
+	(cd docker && docker-compose up -d)
+
+dc-down:
+	(cd docker && docker-compose down)
+
+dc-restart:
+	(cd docker && docker-compose restart)
+
+dc-logs:
+	(cd docker && docker-compose logs django-app)
+
+dc-shell:
+	(cd docker && docker-compose exec django-app bash)
+
 deploy:
 	rsync -Carv \
 	    --exclude '.*' \

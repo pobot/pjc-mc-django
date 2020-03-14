@@ -71,21 +71,39 @@ class ConstrainedCountField(models.PositiveSmallIntegerField):
 
         super().__init__(**kwargs)
 
-        # curate the validators list
-        self._ignored_validators = []
-        validators = []
-        for v in self.validators:
-            if isinstance(v, (MinValueValidator, MaxValueValidator)):
-                self._ignored_validators.append(v)
-            else:
-                validators.append(v)
-        self._validators = validators
+        # remember limit bindings of validators for later
+        self._limit_values = {
+            MinValueValidator: self.min_value,
+            MaxValueValidator: self.max_value
+        }
 
-        # add the bounds validators based on the provided limits
-        self.validators.extend([
-            MinValueValidator(limit_value=self.min_value),
-            MaxValueValidator(limit_value=self.max_value),
-        ])
+        # ensure the bound validators are set for the min_value and max_value settings
+        not_found_validators = {MinValueValidator, MaxValueValidator}
+        for v in self.validators:
+            validator_type = type(v)
+            if validator_type in self._limit_values:
+                v.limit_value = self._limit_values[validator_type]
+                not_found_validators.discard(validator_type)
+
+        # add not yet there bound validators
+        for v_type in not_found_validators:
+            self.validators.append(v_type(limit_value=self._limit_values[v_type]))
+
+        # curate the validators list
+        # self._ignored_validators = []
+        # validators = []
+        # for v in self.validators:
+        #     if isinstance(v, (MinValueValidator, MaxValueValidator)):
+        #         self._ignored_validators.append(v)
+        #     else:
+        #         validators.append(v)
+        # self._validators = validators
+        #
+        # # add the bounds validators based on the provided limits
+        # self.validators.extend([
+        #     MinValueValidator(limit_value=self.min_value),
+        #     MaxValueValidator(limit_value=self.max_value),
+        # ])
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -96,17 +114,22 @@ class ConstrainedCountField(models.PositiveSmallIntegerField):
     def check(self, **kwargs):
         errors = super().check(**kwargs)
 
-        for v in self._ignored_validators:
-            v_class = v.__class__.__name__
-            attr = {
-                'MinValueValidator': 'min_value',
-                'MaxValueValidator': 'max_value'
-            }[v_class]
-            errors.append(checks.Error(
-                f'{v_class} cannot be used with ConstrainedCountField (use {attr} kwarg instead).',
-                obj=self,
-                id='models.generic.E001',
-            ))
+        for v in self.validators:
+            validator_type = type(v)
+            if validator_type in self._limit_values:
+                v.limit_value = self._limit_values[validator_type]
+        #
+        # for v in self._ignored_validators:
+        #     v_class = v.__class__.__name__
+        #     attr = {
+        #         'MinValueValidator': 'min_value',
+        #         'MaxValueValidator': 'max_value'
+        #     }[v_class]
+        #     errors.append(checks.Error(
+        #         f'{v_class} cannot be used with ConstrainedCountField (use {attr} kwarg instead).',
+        #         obj=self,
+        #         id='models.generic.E001',
+        #     ))
 
         return errors
 

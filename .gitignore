@@ -172,3 +172,4 @@ tags
 !/docs/
 .idea
 *.tgz
+prod.env

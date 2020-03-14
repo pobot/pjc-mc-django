@@ -1,4 +1,4 @@
-import os
+from ._env import env
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'POBOT Junior Cup',
@@ -50,5 +50,5 @@ SUIT_CONFIG = {
             'icon': 'icon-lock'
         }
     ),
-    'LIST_PER_PAGE': int(os.environ.get('SUIT_LIST_PER_PAGE', "15")),
+    'LIST_PER_PAGE': env('SUIT_LIST_PER_PAGE'),
 }

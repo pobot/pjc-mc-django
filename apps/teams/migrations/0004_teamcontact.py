@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='TeamContact',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('gender', models.SmallIntegerField(choices=[('M', 'M.'), ('Mme', 'Mme'), ('Mlle', 'Mlle')], default='M', verbose_name='genre')),
+                ('gender', models.CharField(choices=[('M', 'M.'), ('Mme', 'Mme'), ('Mlle', 'Mlle')], default='M', max_length=4, verbose_name='genre')),
                 ('first_name', models.CharField(max_length=30, verbose_name='prénom')),
                 ('last_name', models.CharField(max_length=30, verbose_name='nom')),
                 ('email', models.EmailField(blank=True, max_length=150, verbose_name='email')),

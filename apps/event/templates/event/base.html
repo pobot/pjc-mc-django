@@ -22,22 +22,22 @@
                     <span class="icon-bar"></span>
                   </button>
                 {% endif %}
-              <a class="navbar-brand" href="{% url 'event:home' %}">{{ brand }}</a>
+              <a class="navbar-brand" href="{% url 'finals:home' %}">{{ brand }}</a>
             </div>
 
             {% if user.is_authenticated %}
                 <ul class="dropdown-menu" id="bs-match">
-                    <li><a href="{% url 'event:results_lego' %}">Classement général Mindstorms</a></li>
-                    <li><a href="{% url 'event:results_arduino' %}">Classement général Arduino</a></li>
-                    <li><a href="{% url 'event:results_rpi' %}">Classement général Raspberry</a></li>
+                    <li><a href="{% url 'finals:results_lego' %}">Classement général Mindstorms</a></li>
+                    <li><a href="{% url 'finals:results_arduino' %}">Classement général Arduino</a></li>
+                    <li><a href="{% url 'finals:results_rpi' %}">Classement général Raspberry</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="{% url 'event:best_lego' %}">Meilleur robot Mindstorms</a></li>
-                    <li><a href="{% url 'event:best_arduino' %}">Meilleur robot Arduino</a></li>
-                    <li><a href="{% url 'event:best_rpi' %}">Meilleur robot Raspberry</a></li>
-                    <li><a href="{% url 'event:best_research' %}">Meilleur dossier de recherche</a></li>
-                    <li><a href="{% url 'event:best_poster' %}">Meilleur poster</a></li>
+                    <li><a href="{% url 'finals:best_lego' %}">Meilleur robot Mindstorms</a></li>
+                    <li><a href="{% url 'finals:best_arduino' %}">Meilleur robot Arduino</a></li>
+                    <li><a href="{% url 'finals:best_rpi' %}">Meilleur robot Raspberry</a></li>
+                    <li><a href="{% url 'finals:best_research' %}">Meilleur dossier de recherche</a></li>
+                    <li><a href="{% url 'finals:best_poster' %}">Meilleur poster</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="{% url 'event:logout' %}">Déconnexion</a></li>
+                    <li><a href="{% url 'finals:logout' %}">Déconnexion</a></li>
                 </ul>
             {% endif %}
         </div>

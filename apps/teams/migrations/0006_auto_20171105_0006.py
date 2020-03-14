@@ -16,9 +16,9 @@ class Migration(migrations.Migration):
             name='teamcontact',
             options={'ordering': ['last_name'], 'verbose_name': 'contact', 'verbose_name_plural': 'contacts'},
         ),
-        migrations.AlterField(
-            model_name='teamcontact',
-            name='gender',
-            field=models.CharField(choices=[('M', 'M'), ('Mme', 'Mme'), ('Mlle', 'Mlle')], default='M', max_length=4, verbose_name='genre'),
-        ),
+        # migrations.AlterField(
+        #     model_name='teamcontact',
+        #     name='gender',
+        #     field=models.CharField(choices=[('M', 'M'), ('Mme', 'Mme'), ('Mlle', 'Mlle')], default='M', max_length=4, verbose_name='genre'),
+        # ),
     ]
