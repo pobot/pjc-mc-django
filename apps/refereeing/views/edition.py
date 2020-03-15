@@ -10,7 +10,7 @@ class Robotics1CreateView(RoboticsBaseView):
     multi_trials_allowed = True
     used_time_field = "used_time"
     input_fields = {
-        'sections': 0
+        'travels': 0
     }
 
 
@@ -20,8 +20,8 @@ class Robotics2CreateView(RoboticsBaseView):
     multi_trials_allowed = True
     used_time_field = "used_time"
     input_fields = {
-        'sections': 0,
-        'object_retrieved': False,
+        'travels': 0,
+        'moved_obstacles': 0,
     }
 
 
@@ -31,6 +31,6 @@ class Robotics3CreateView(RoboticsBaseView):
     multi_trials_allowed = True
     used_time_field = "used_time"
     input_fields = {
-        'captured_objects': 0,
-        'deposited_objects': 0,
+        'good_fruits': 0,
+        'bad_fruits': 0,
     }

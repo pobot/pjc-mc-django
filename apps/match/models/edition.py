@@ -49,25 +49,25 @@ class BaseMatch(RoboticsMatch):
         return action_points + self.get_time_bonus(action_points)
 
 
-class SectionBasedMatch(BaseMatch):
-    SECTION_POINTS = 1
-    MAX_SECTIONS = 8
+class TravelCountBasedMatch(BaseMatch):
+    TRAVEL_POINTS = 1
+    MAX_TRAVELS = 6
 
     class Meta:
         abstract = True
 
-    sections = ConstrainedCountField(
-        verbose_name='sections parcourues',
+    travels = ConstrainedCountField(
+        verbose_name='trajets effectués',
         default=0,
-        max_value=MAX_SECTIONS,
+        max_value=MAX_TRAVELS,
     )
 
     def get_action_points(self):
-        """ Counts 1 point per full section """
-        return self.sections * self.SECTION_POINTS
+        """ Counts 1 point per travel """
+        return self.travels * self.TRAVEL_POINTS
 
 
-class Robotics1(SectionBasedMatch):
+class Robotics1(TravelCountBasedMatch):
     class Meta:
         verbose_name = 'résultat épreuve 1'
         verbose_name_plural = 'résultats épreuve 1'
@@ -75,93 +75,94 @@ class Robotics1(SectionBasedMatch):
     @classmethod
     def mission_complete_credit(cls):
         """ The max action credits corresponds to :
-          - 8 sections traveled
+          - 6 travels done
         """
-        return cls.SECTION_POINTS * cls.MAX_SECTIONS
+        return cls.TRAVEL_POINTS * cls.MAX_TRAVELS
 
     def get_detail(self):
         bonus = self.get_time_bonus(self.get_action_points())
-        return f"sections : {self.sections}, bonus temps : {bonus}"
+        return f"trajets : {self.travels}, bonus temps : {bonus}"
 
 
-class Robotics2(SectionBasedMatch):
-    OBJECT_RETRIEVED_POINTS = 5
+class Robotics2(TravelCountBasedMatch):
+    MOVED_OBSTACLE_MALUS = 5
+    OBSTACLE_COUNT = 3
 
     class Meta:
         verbose_name = 'résultat épreuve 2'
         verbose_name_plural = 'résultats épreuve 2'
 
-    object_retrieved = models.BooleanField(
-        verbose_name='objet récupéré ?',
-        default=False,
+    moved_obstacles = ConstrainedCountField(
+        verbose_name='obstacle déplacés',
+        default=0,
+        max_value=OBSTACLE_COUNT,
     )
 
     @classmethod
     def mission_complete_credit(cls):
         """ The max action credits corresponds to :
-          - 8 sections traveled
-          - object retrieved
+          - 6 travels done
+          - no obstacle moved
         """
-        return cls.SECTION_POINTS * cls.MAX_SECTIONS + cls.OBJECT_RETRIEVED_POINTS
+        return cls.TRAVEL_POINTS * cls.MAX_TRAVELS
 
     def get_action_points(self):
-        return super().get_action_points() + (self.OBJECT_RETRIEVED_POINTS if self.object_retrieved else 0)
+        return super().get_action_points() - self.MOVED_OBSTACLE_MALUS * self.moved_obstacles
 
     def get_detail(self):
         bonus = self.get_time_bonus(self.get_action_points())
-        return f"sections : {self.sections}, objet récupéré : {self.object_retrieved}, bonus temps : {bonus}"
+        return f"trajets : {self.travels}, obstacles déplacés : {self.moved_obstacles}, bonus temps : {bonus}"
+
+    _moved_limits = [1, 1, 1, 2, 2, 3, 3]
 
     def clean(self):
-        if self.object_retrieved and self.sections < self.MAX_SECTIONS:
+        if self.moved_obstacles > self._moved_limits[self.travels]:
             raise ValidationError({
-                'sections': MSG_VALUES_MISMATCH,
-                'object_retrieved': MSG_VALUES_MISMATCH
+                'travels': MSG_VALUES_MISMATCH,
+                'moved_obstacles': MSG_VALUES_MISMATCH
             })
 
 
 class Robotics3(BaseMatch):
-    OBJECT_CAPTURED_POINTS = 1
-    OBJECT_DEPOSITED_POINTS = 2
+    FRUITS_COLLECTED_SINGLE_BONUS = 1
+    GOOD_FRUIT_BONUS = 1
+    BAD_FRUIT_MALUS = 2
 
-    MAX_OBJECTS = 2
+    MAX_GOOD_FRUITS = 6
+    MAX_BAD_FRUITS = 3
 
     class Meta:
         verbose_name = 'résultat épreuve 3'
         verbose_name_plural = 'résultats épreuve 3'
 
-    captured_objects = ConstrainedCountField(
-        verbose_name='objets récupérés',
+    good_fruits = ConstrainedCountField(
+        verbose_name='fruits mûrs',
         default=0,
-        max_value=MAX_OBJECTS
+        max_value=MAX_GOOD_FRUITS
     )
-    deposited_objects = ConstrainedCountField(
-        verbose_name='objets déposés',
+    bad_fruits = ConstrainedCountField(
+        verbose_name='fruits verts',
         default=0,
-        max_value=MAX_OBJECTS
+        max_value=MAX_BAD_FRUITS
     )
-
-    def clean(self):
-        if self.deposited_objects > self.captured_objects:
-            raise ValidationError({
-                'captured_objects': MSG_VALUES_MISMATCH,
-                'deposited_objects': MSG_VALUES_MISMATCH
-            })
 
     @classmethod
     def mission_complete_credit(cls):
         """ The max action credits corresponds to :
-          - 2 objects captured and deposited
+          - 6 good fruits picked and at home
+          - no bad fruits picked
         """
-        return cls.MAX_OBJECTS * (cls.OBJECT_CAPTURED_POINTS + cls.OBJECT_DEPOSITED_POINTS)
+        return cls.MAX_GOOD_FRUITS * cls.GOOD_FRUIT_BONUS + cls.FRUITS_COLLECTED_SINGLE_BONUS
 
     def get_action_points(self):
         return \
-            self.OBJECT_CAPTURED_POINTS * self.captured_objects + \
-            self.OBJECT_DEPOSITED_POINTS * self.deposited_objects
+            (1 if self.good_fruits or self.bad_fruits else 0) + \
+            self.GOOD_FRUIT_BONUS * self.good_fruits - \
+            self.BAD_FRUIT_MALUS * self.bad_fruits
 
     def get_detail(self):
         bonus = self.get_time_bonus(self.get_action_points())
         return \
-            f"objets capturés : {self.captured_objects}" \
-            f", objets déposés : {self.deposited_objects}" \
+            f"fruits mûrs : {self.good_fruits}" \
+            f", fruits verts : {self.bad_fruits}" \
             f", bonus temps : {bonus}"
