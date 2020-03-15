@@ -172,4 +172,7 @@ tags
 !/docs/
 .idea
 *.tgz
+*.tar
 prod.env
+/docker/shared/
+/untracked/
