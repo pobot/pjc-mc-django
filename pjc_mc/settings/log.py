@@ -13,7 +13,11 @@ LOGGING = DEFAULT_LOGGING
 # add our stuff
 LOGGING['formatters'].update({
     'verbose': {
-        'format': '%(asctime)s [%(levelname).1s] %(name)s > %(message)s',
+        'format': '%(asctime)s [%(process)d] [%(levelname).1s] %(name)s > %(message)s',
+        'datefmt': '%H:%M:%S',
+    },
+    'gunicorn': {
+        'format': '%(asctime)s [%(process)d] [%(levelname).1s] gunicorn > %(message)s',
         'datefmt': '%H:%M:%S',
     }
 })
@@ -22,11 +26,21 @@ LOGGING['handlers'].update({
         'level': 'INFO',
         'class': 'logging.StreamHandler',
         'formatter': 'verbose'
+    },
+    'gunicorn.pjc': {
+        'level': 'INFO',
+        'class': 'logging.StreamHandler',
+        'formatter': 'gunicorn'
     }
 })
 LOGGING['loggers'].update({
     'pjc': {
         'handlers': ['console.pjc'],
         'level': 'INFO'
-    }
+    },
+    "gunicorn": {
+        "handlers": ["gunicorn.pjc"],
+        "level": "INFO",
+        "propagate": False
+    },
 })
