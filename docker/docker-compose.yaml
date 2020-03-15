@@ -14,6 +14,8 @@ services:
       - DATABASE_URL
       - SECRET_KEY
       - PJCMC_ADMIN_EMAIL
+    volumes:
+      - ./shared:/var/lib/shared
 
   db:
     image: postgres
@@ -32,4 +34,6 @@ networks:
 
 volumes:
   pjcmc_db_data:
+    driver: local
+  shared:
     driver: local

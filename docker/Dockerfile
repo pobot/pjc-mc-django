@@ -8,6 +8,9 @@ COPY requirements.txt .
 RUN pip install pip -U \
     && pip install -r requirements.txt
 
+RUN useradd -u 1000 pjcmc
+USER pjcmc
+
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 COPY . .

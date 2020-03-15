@@ -14,6 +14,7 @@ __pycache__
 
 *.sqlite3
 *.tgz
+*.tar
 tests
 pytest*
 
@@ -23,3 +24,4 @@ rpi
 Makefile
 build
 docker
+docker/shared

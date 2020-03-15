@@ -3,12 +3,17 @@ export
 
 HOST=eric-laptop.local
 REMOTE_DIR=/home/eric/pjc-mc
+IMAGE=local/pjc_mc
+DOCS_LIST := '*'
 
 image:
-	docker build -f docker/Dockerfile -t local/pjc_mc:latest .
+	docker build -f docker/Dockerfile -t $(IMAGE):latest .
+
+save-image:
+	docker save $(IMAGE):latest --output pjc_mc-latest.tar
 
 run-image:
-	docker run -it --rm local/pjc_mc:latest ./manage.py runserver
+	docker run -it --rm $(IMAGE):latest ./manage.py runserver
 
 dc-up:
 	(cd docker && docker-compose up -d)
@@ -20,28 +25,13 @@ dc-restart:
 	(cd docker && docker-compose restart)
 
 dc-logs:
-	(cd docker && docker-compose logs django-app)
+	(cd docker && docker-compose logs -f django-app)
 
 dc-shell:
 	(cd docker && docker-compose exec django-app bash)
 
-deploy:
-	rsync -Carv \
-	    --exclude '.*' \
-        --exclude '*.pyc' \
-        --exclude __pycache__ \
-        --exclude '*.sqlite3' \
-        --exclude '*.tgz' \
-        --exclude data \
-        --exclude requirements-dev.txt \
-        --exclude collected_static \
-        --exclude teams.txt \
-        --exclude tests \
-        --exclude pytest.ini \
-        ./ $(HOST):$(REMOTE_DIR)/
-
-deploy_db:
-	rsync -Carv db.sqlite3 $(HOST):$(REMOTE_DIR)/
+docs:
+	(cd docker && docker-compose exec django-app ./manage.py make_docs -g $(DOCS_LIST) -o /var/lib/shared/)
 
 run:
 	PYTHONPATH=. gunicorn --config gunicorn/config.py pjc_mc.wsgi
@@ -50,12 +40,23 @@ runserver:
 	./manage.py runserver 0:8000
 
 migrations:
-	./manage.py makemigrations
+	DATABASE_URL=sqlite:///db.sqlite3 ./manage.py makemigrations
 
 migrate:
-	./manage.py migrate
+	DATABASE_URL=sqlite:///db.sqlite3 ./manage.py migrate
 
 collectstatic:
 	./manage.py collectstatic
 
-.PHONY: deploy deploy_db run runserver migrations migrate collectstatic
+db-dump:
+	(cd docker \
+		&& docker-compose exec django-app ./manage.py dumpdata \
+			--exclude auth \
+			--exclude contenttypes \
+			--exclude sessions \
+			--exclude admin \
+			--output dumpdata.json \
+	) \
+	&& docker cp django-app:/app/dumpdata.json .
+
+.PHONY: deploy deploy_db run runserver migrations migrate collectstatic docs
