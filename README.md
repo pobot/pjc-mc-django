@@ -79,3 +79,140 @@ de déroulement et l'admin du back-office.
 fait du très bon boulot pour servir les ressources statiques de manière optimisée derrière
 gunicorn sans devoir jouer avec `manage.py collectstatic` et un serveur HTTP en frontal pour servir 
 ces ressources.
+
+## Evolutions 2020
+
+Ayant eu quelques inquiétudes lors de l'édition 2019 avec des messages zarbis relatifs 
+à la base de données SQLite, on est passé à un vrai serveur car j'ai fini par avoir des doutes
+en cas de requêtes attaquant simultanément la database.
+
+Comme il n'est pas question cependant de devoir installer un SGBD sur les machines de dev
+et de prod, la solution magique est Docker. L'ensemble de l'application a donc été migrée
+vers un stack Docker-compose, composé de 2 containers:
+- l'application Django
+- un serveur PostgreSQL
+
+### Préparation du déploiement
+
+Créer un répertoire pour les fichiers du stack:
+
+    $ makdir pjcmc
+    $ cd pjcmc
+
+Créer le network externe au stack pour pouvoir accéder
+à l'appli depuis le host:
+
+    $ docker network create pjc_mc
+    
+Créer le volume persistent pour les données de PostgreSQL:
+ 
+    $ docker volume create pjcmc_db_data
+    
+Créer le répertoire partagé pour échanger des fichiers avec l'appli Django 
+(ex: les PDF produits par la *management command* `make_docs`) :
+
+    $ mkdir shared
+    
+Transférer les fichiers suivant dans le répertoire du stack:
+- `docker-compose.yaml`
+- `.env`
+
+### Transfert de l'image Docker de l'appli
+
+Sur la machine de développement, sauvegarder l'image:
+
+    $ docker save local/pjc_mc:latest --output pjc_mc-latest.tar
+    
+La transférer sur la machine de prod:
+
+    $ scp pjc_mc-latest.tar <hostname>:/relpath/to/pjcmc/
+    
+Sur la machine de prod, charger l'image dans le repo local:
+    
+    $ docker load -i pjc_mc-latest.tar
+    
+### Premier lancement
+
+Ce lancement ne conduira pas à un stack opérationnel, car la database n'existe pas encore
+et que l'appli Django doit être initialisée. Il permettra cependant d'effectuer ces opérations.
+
+Note: dans les exemples suivants, on suppose que l'alias `dc` a été créé au préalable 
+pour la commande `docker-compose`.
+
+Lancer le stack en mode *detached* et vérifier que les deux containers tournent:
+
+    $ dc up -d
+    Creating db ... done
+    Creating django-app ... done
+    $ docker ps
+    CONTAINER ID    IMAGE               COMMAND     ....    NAMES
+    ...             local/pjc_mc:latest ...         ....    django-app
+    ...             postgres            ...         ....    db
+
+Créer la database de l'appli dans le serveur PostgreSQL:
+
+    $ dc exec db psql -U postgres
+    psql (11.1...)
+    Type "help" for help.
+    
+    postgres=# create database pjc_mc;
+    
+Relancer le container django-app dont le log doit contenir une erreur liée au fait
+que la base n'existait pas lors du premier lancement:
+
+    $ dc restart django-app
+    
+Si on examine le log, on doit cette fois-ci voir les messages de la migration initiale
+qui crée l'ensemble des tables de l'appli.
+
+Il faut maintenant initialiser le superuser Django:
+
+    $ dc exec django-app ./manage.py createsuperuser
+    
+Il ne reste plus qu'à initialiser le pool des fidèles arbitres:
+
+    $ dc exec django-app ./manage.py create_referees
+    
+Et voilà, c'est prêt :) 
+
+On peut maintenant aller sur l'admin en local à l'URL
+`http://localhost:8000/admin`. Il doit afficher le formulaire de login, et si on
+y entre les credentials du superuser créé précédemment, on doit obtenir la page d'accueil
+de l'admin. 
+
+En profiter pour vérifier que les users des arbitres ont bien été créés.
+
+### Sauvegarde des données
+
+Le plus simple est de faire un dump PostgreSQL, l'autre option étant d'utiliser les 
+management commands de Django.
+
+    $ dc exec db pg_dump -U postgres pjc_mc | gzip > pjc_mc-dump.gz
+    
+Au moins on est certain de tout avoir, y compris les tables internes de Django 
+(migrations et autres).
+
+### Génération des documents
+
+Plusieurs documents sont produits au format PDF à partir des données gérées par 
+l'application, à l'aide de la *management command* `make_docs`:
+- certificats de participation des équipes
+- diplômes à remplir
+- listes des équipes
+- feuilles de match nomminatives
+- fiches nomminatives d'évaluation des exposés, des posters
+- étiquettes nominatives des stands
+- signalétique
+- ...
+
+
+    $ dc exec django-app ./manage.py make_docs
+
+Utiliser l'option `--help` pour obtenir la liste des options disponibles, dont:
+
+- `-g` pour définir quels documents produire
+- `-o` pour définir le répertoire dans lequel les documents sont produits
+
+Concernant le répertoire de sortie, se souvenir que le répertoire host `pjcmc/shared` 
+est monté dans le container sous `/var/lib/shared`, avec un uid/gid `1000/1000` afin
+que les fichiers soient accessibles en R/W sous le host. 
