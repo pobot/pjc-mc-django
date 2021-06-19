@@ -29,6 +29,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 # but we don't care here
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
+print(f"DEBUG={DEBUG}")
 
 ALLOWED_HOSTS = ['*']
 
@@ -96,6 +97,7 @@ WSGI_APPLICATION = 'pjc_mc.wsgi.application'
 DATABASES = {
     'default': env.db()
 }
+print(f"DATABASES={DATABASES}")
 
 
 # Password validation
