@@ -108,7 +108,7 @@ class ReportGenerator(object):
     description = None
     page_size = portrait(A4)
 
-    def __init__(self, output_dir):
+    def __init__(self, output_dir, **kwargs):
         self._output_dir = output_dir
         self.pdf_file_path = os.path.join(self._output_dir, self.output_file_name + '.pdf')
 

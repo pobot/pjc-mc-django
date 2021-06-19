@@ -15,6 +15,7 @@ from PIL import Image
 from docmaker.commons import ASSETS_DIR, ReportGenerator
 
 from teams.models import Team
+from event.models import Ranking, RankingType
 
 __author__ = 'Eric Pascual'
 
@@ -38,13 +39,14 @@ class DiplomasGenerator(ReportGenerator):
 
     frame_bkgnd_color = HexColor(0xe5eaef)
 
-    def __init__(self, output_dir):
+    def __init__(self, output_dir, use_results=False):
         super().__init__(output_dir)
 
         self.logo_path = os.path.join(ASSETS_DIR, "logo_left.png")
         self.logo_size = Image.open(self.logo_path).size
 
         self.canvas = None
+        self.use_results = use_results
 
     def _draw_text(self,
                    text: str,
@@ -140,26 +142,58 @@ class DiplomasGenerator(ReportGenerator):
 
             self.canvas.showPage()
 
-    def _generate_diploma(self, frame_color, title):
+    def _generate_diploma(self, frame_color, title, team=None):
         self._draw_frame(frame_color=frame_color, title=title)
 
-        self.canvas.setStrokeColor(lightgrey)
-        self.canvas.setLineWidth(1)
-        y = self.frame_height * 0.50
-        x0 = self.page_width / 2
-        line_length = self.frame_width * 0.6
-        self.canvas.line(x0 - line_length / 2, y, x0 + line_length / 2, y)
+        if team is not None:
+            self._draw_text(
+                team.name,
+                self.page_width / 2,
+                self.frame_height * 0.55,
+                black,
+                "DejaVuSansCondensed-Bold", 32,
+                ALIGN_CENTER
+            )
+
+        else:
+            self.canvas.setStrokeColor(lightgrey)
+            self.canvas.setLineWidth(1)
+            y = self.frame_height * 0.50
+            x0 = self.page_width / 2
+            line_length = self.frame_width * 0.6
+            self.canvas.line(x0 - line_length / 2, y, x0 + line_length / 2, y)
 
         self.canvas.showPage()
 
+    def _generate_diploma_set(self, title, frame_color, ranking_field):
+        if self.use_results:
+            ranking_queryset = Ranking.objects.filter(type_code=RankingType.Scratch.value, **{ranking_field: 1})
+            winners = (r.team for r in ranking_queryset)
+            for team in winners:
+                self._generate_diploma(frame_color=frame_color, title=title, team=team)
+        else:
+            self._generate_diploma(frame_color=frame_color, title=title)
+
     def _generate_presentation_diploma(self):
-        self._generate_diploma(frame_color=0x2fbb4b, title="Prix du Meilleur Exposé")
+        self._generate_diploma_set(
+            title="Prix du Meilleur Exposé",
+            frame_color=0x2fbb4b,
+            ranking_field="research"
+        )
 
     def _generate_poster_diploma(self):
-        self._generate_diploma(frame_color=0x2f6bbb, title="Prix du Meilleur Poster")
+        self._generate_diploma_set(
+            title="Prix du Meilleur Poster",
+            frame_color=0x2f6bbb,
+            ranking_field="poster"
+        )
 
     def _generate_robot_diploma(self):
-        self._generate_diploma(frame_color=0xbb2f30, title="Prix du Meilleur Robot")
+        self._generate_diploma_set(
+            title="Prix du Meilleur Robot",
+            frame_color=0xbb2f30,
+            ranking_field="robotics"
+        )
 
     def generate(self):
         self.canvas = canvas.Canvas(
@@ -180,4 +214,3 @@ class DiplomasGenerator(ReportGenerator):
         self._generate_robot_diploma()
 
         self.canvas.save()
-
