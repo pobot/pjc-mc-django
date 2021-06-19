@@ -1,6 +1,6 @@
 appdirs==1.4.3
 arrow==0.13.1
-Django==1.11.20
+Django==2.2.24
 django-environ==0.4.5
 django-suit==0.2.26
 django-bootstrap3==11.0.0
