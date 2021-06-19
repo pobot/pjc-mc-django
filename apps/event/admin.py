@@ -1,10 +1,9 @@
-import datetime
-
-from django.db.models import Min
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 from django.conf.locale.fr import formats as fr_formats
 from django.conf.locale.en import formats as en_formats
+from django.contrib import messages
+
 from .models import *
 
 fr_formats.TIME_FORMAT = "H:i"
@@ -112,12 +111,37 @@ class RankingCatFilter(admin.SimpleListFilter):
         return str(self.default_value) if value is None else value
 
 
+def generate_diplomas(modeladmin, request, queryset):
+    import json
+    from pathlib import Path
+
+    from django.core.management import call_command
+    from django.http import HttpResponse
+
+    output = json.loads(call_command('make_docs', selection='d', use_results=True))
+
+    file_name = output['documents'][0]
+    file_path = Path(output['output_dir']) / file_name
+    with file_path.open('rb') as fp:
+        response = HttpResponse(
+            fp.read(),
+            content_type="application/pdf",
+        )
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+    response['Content-Length'] = file_path.lstat().st_size
+    return response
+
+
+generate_diplomas.short_description = "Générer les diplômes"
+
+
 @admin.register(Ranking)
 class RankingDisplayAdmin(admin.ModelAdmin):
     list_display = ['team', 'team_grade', 'team_cat', 'general', 'robotics', 'research', 'poster']
     readonly_fields = list_display
     list_filter = [RankingCatFilter]
     list_display_links = None
+    actions = [generate_diplomas]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -128,7 +152,10 @@ class RankingDisplayAdmin(admin.ModelAdmin):
         return False
 
     def get_actions(self, request):
-        return []
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 
     def team_cat(self, obj):
         return obj.team.category.name

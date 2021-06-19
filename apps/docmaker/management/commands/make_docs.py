@@ -3,6 +3,7 @@
 from textwrap import dedent
 import argparse
 import os
+import json
 
 from django.core.management import BaseCommand
 
@@ -106,6 +107,8 @@ class Command(BaseCommand):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
 
+        generated = []
+
         self.stdout.write('Generating documents in : %s' % output_dir)
         for generator_class in (v for k, v in _generators.items() if k in selection):
             generator = generator_class(output_dir, use_results)
@@ -121,4 +124,11 @@ class Command(BaseCommand):
                 generator.remove_report_file()
 
             else:
-                self.stdout.write('--> %s' % os.path.basename(generator.pdf_file_path))
+                doc_name = os.path.basename(generator.pdf_file_path)
+                self.stdout.write('--> %s' % doc_name)
+                generated.append(os.path.basename(doc_name))
+
+        return json.dumps({
+            'documents': generated,
+            'output_dir': output_dir
+        })
