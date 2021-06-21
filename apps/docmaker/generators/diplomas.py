@@ -14,7 +14,7 @@ from PIL import Image
 
 from docmaker.commons import ASSETS_DIR, ReportGenerator
 
-from teams.models import Team
+from teams.models import Team, Category
 from event.models import Ranking, RankingType
 
 __author__ = 'Eric Pascual'
@@ -165,9 +165,12 @@ class DiplomasGenerator(ReportGenerator):
 
         self.canvas.showPage()
 
-    def _generate_diploma_set(self, title, frame_color, ranking_field):
+    def _generate_diploma_set(self, title, frame_color, ranking_field, ranking_type=RankingType.Scratch):
         if self.use_results:
-            ranking_queryset = Ranking.objects.filter(type_code=RankingType.Scratch.value, **{ranking_field: 1})
+            ranking_queryset = Ranking.objects.filter(
+                type_code=ranking_type.value,
+                **{ranking_field: 1}
+            )
             winners = (r.team for r in ranking_queryset)
             for team in winners:
                 self._generate_diploma(frame_color=frame_color, title=title, team=team)
@@ -195,6 +198,15 @@ class DiplomasGenerator(ReportGenerator):
             ranking_field="robotics"
         )
 
+    def _generate_winner_diploma(self):
+        for category in Category:
+            self._generate_diploma_set(
+                title=f"Vainqueur {category.name}",
+                frame_color=0xbba62f,
+                ranking_field="general",
+                ranking_type=RankingType(category.value)
+            )
+
     def generate(self):
         self.canvas = canvas.Canvas(
             self.pdf_file_path,
@@ -212,5 +224,6 @@ class DiplomasGenerator(ReportGenerator):
         self._generate_presentation_diploma()
         self._generate_poster_diploma()
         self._generate_robot_diploma()
+        self._generate_winner_diploma()
 
         self.canvas.save()
