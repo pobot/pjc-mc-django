@@ -21,7 +21,7 @@ class Command(SPIPCommand):
 
     def get_spip_code(self):
         lines = [
-            "{{{Les résultats finaux}}}",
+            "{{{Classement général}}}",
             ""
         ]
 
@@ -44,7 +44,7 @@ class Command(SPIPCommand):
             qs = Ranking.objects.filter(type_code=categ.value).order_by('general')
             if qs:
                 lines.extend([
-                    "{{Catégorie %s}}" % categ.name,
+                    "{{- catégorie %s}}" % categ.name,
                     '',
                     '| {{Rang}} | {{Equipe}} | {{Classe}} | {{Etablissement}} |'
                 ])
